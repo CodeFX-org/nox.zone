@@ -3,17 +3,16 @@ package dev.nipafx.ginevra.render;
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Element;
 import dev.nipafx.ginevra.html.Heading;
+import dev.nipafx.ginevra.html.Id;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static dev.nipafx.ginevra.html.HtmlElement.h1;
+import static dev.nipafx.ginevra.render.HtmlRendererTest.RENDERER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HeadingRendererTest {
 
-	private static final Renderer RENDERER = new Renderer();
 	private static final String TAG = "h1";
 
 	@Nested
@@ -60,11 +59,6 @@ class HeadingRendererTest {
 	static class TestBasics implements HtmlRendererTest.TestBasics {
 
 		@Override
-		public Renderer renderer() {
-			return RENDERER;
-		}
-
-		@Override
 		public String tag() {
 			return TAG;
 		}
@@ -75,8 +69,8 @@ class HeadingRendererTest {
 	class IdAndClasses extends TestBasics implements HtmlRendererTest.IdAndClasses<Heading> {
 
 		@Override
-		public Heading createWith(String id, List<String> classes) {
-			return h1.id(id).classes(Classes.of(classes));
+		public Heading createWith(Id id, Classes classes) {
+			return h1.id(id).classes( classes);
 		}
 
 	}

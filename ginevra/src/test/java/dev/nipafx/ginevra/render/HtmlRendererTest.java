@@ -1,9 +1,19 @@
 package dev.nipafx.ginevra.render;
 
+import dev.nipafx.ginevra.execution.StoreFront;
+import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.html.Id;
+import dev.nipafx.ginevra.outline.Document;
+import dev.nipafx.ginevra.outline.Document.Data;
+import dev.nipafx.ginevra.outline.Document.FileData;
+import dev.nipafx.ginevra.outline.Query.CollectionQuery;
+import dev.nipafx.ginevra.outline.Query.RootQuery;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static dev.nipafx.ginevra.html.HtmlElement.br;
 import static dev.nipafx.ginevra.html.HtmlElement.p;
@@ -15,9 +25,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class HtmlRendererTest {
 
+	public static final Renderer RENDERER = new Renderer(new EmptyStore(), Path.of(""), Path.of(""));
+	public static final ElementResolver RESOLVER = new ElementResolver(new EmptyStore(), Path.of(""), Path.of(""));
+
 	interface TestBasics {
 
-		Renderer renderer();
+		default Renderer renderer() {
+			return RENDERER;
+		}
 
 		String tag();
 
@@ -25,7 +40,7 @@ class HtmlRendererTest {
 
 	interface IdAndClasses<ELEMENT extends Element> extends TestBasics {
 
-		ELEMENT createWith(String id, List<String> classes);
+		ELEMENT createWith(Id id, Classes classes);
 
 		default boolean isSelfClosing() {
 			return false;
@@ -33,7 +48,7 @@ class HtmlRendererTest {
 
 		@Test
 		default void neither() {
-			var element = createWith(null, List.of());
+			var element = createWith(Id.none(), Classes.none());
 			var rendered = renderer().render(element);
 
 			if (isSelfClosing())
@@ -48,7 +63,7 @@ class HtmlRendererTest {
 
 		@Test
 		default void withEmptyId() {
-			var element = createWith("", List.of());
+			var element = createWith(Id.none(), Classes.none());
 			var rendered = renderer().render(element);
 
 			if (isSelfClosing())
@@ -63,7 +78,7 @@ class HtmlRendererTest {
 
 		@Test
 		default void withId() {
-			var element = createWith("the-id", List.of());
+			var element = createWith(Id.of("the-id"), Classes.none());
 			var rendered = renderer().render(element);
 
 			if (isSelfClosing())
@@ -78,7 +93,7 @@ class HtmlRendererTest {
 
 		@Test
 		default void withOneEmptyClass() {
-			var element = createWith(null, List.of(""));
+			var element = createWith(Id.none(), Classes.of(""));
 			var rendered = renderer().render(element);
 
 			if (isSelfClosing())
@@ -93,7 +108,7 @@ class HtmlRendererTest {
 
 		@Test
 		default void withOneClass() {
-			var element = createWith(null, List.of("the-class"));
+			var element = createWith(Id.none(), Classes.of("the-class"));
 			var rendered = renderer().render(element);
 
 			if (isSelfClosing())
@@ -108,7 +123,7 @@ class HtmlRendererTest {
 
 		@Test
 		default void withEmptyClasses() {
-			var element = createWith(null, List.of("", ""));
+			var element = createWith(Id.none(), Classes.of("", ""));
 			var rendered = renderer().render(element);
 
 			if (isSelfClosing())
@@ -123,7 +138,7 @@ class HtmlRendererTest {
 
 		@Test
 		default void withClasses() {
-			var element = createWith(null, List.of("one-class", "another-class"));
+			var element = createWith(Id.none(), Classes.of("one-class", "another-class"));
 			var rendered = renderer().render(element);
 
 			if (isSelfClosing())
@@ -138,7 +153,7 @@ class HtmlRendererTest {
 
 		@Test
 		default void withIdAndClasses() {
-			var element = createWith("the-id", List.of("one-class", "another-class"));
+			var element = createWith(Id.of("the-id"), Classes.of("one-class", "another-class"));
 			var rendered = renderer().render(element);
 
 			if (isSelfClosing())
@@ -246,7 +261,7 @@ class HtmlRendererTest {
 		default void withOneChild() {
 			var element =
 					createWith(
-							span.id("child"));
+							span.id(Id.of("child")));
 			var rendered = renderer().render(element);
 
 			assertThat(rendered).isEqualTo(STR."""
@@ -260,9 +275,9 @@ class HtmlRendererTest {
 		default void withChildren() {
 			var element =
 					createWith(
-							span.id("child-1"),
-							span.id("child-2"),
-							span.id("child-3"));
+							span.id(Id.of("child-1")),
+							span.id(Id.of("child-2")),
+							span.id(Id.of("child-3")));
 			var rendered = renderer().render(element);
 
 			assertThat(rendered).isEqualTo(STR."""
@@ -279,7 +294,7 @@ class HtmlRendererTest {
 			var element =
 					createWith(
 							createWith(
-									span.id("grandchild")));
+									span.id(Id.of("grandchild"))));
 			var rendered = renderer().render(element);
 
 			assertThat(rendered).isEqualTo(STR."""
@@ -296,9 +311,9 @@ class HtmlRendererTest {
 			var element =
 					createWith(
 							createWith(
-									span.id("grandchild")),
-							span.id("child-1"),
-							span.id("child-2"));
+									span.id(Id.of("grandchild"))),
+							span.id(Id.of("child-1")),
+							span.id(Id.of("child-2")));
 			var rendered = renderer().render(element);
 
 			assertThat(rendered).isEqualTo(STR."""
@@ -316,10 +331,10 @@ class HtmlRendererTest {
 		default void withChildrenAndOneGrandchild_middle() {
 			var element =
 					createWith(
-							span.id("child-1"),
+							span.id(Id.of("child-1")),
 							createWith(
-									span.id("grandchild")),
-							span.id("child-2"));
+									span.id(Id.of("grandchild"))),
+							span.id(Id.of("child-2")));
 			var rendered = renderer().render(element);
 
 			assertThat(rendered).isEqualTo(STR."""
@@ -337,10 +352,10 @@ class HtmlRendererTest {
 		default void withChildrenAndOneGrandchild_last() {
 			var element =
 					createWith(
-							span.id("child-1"),
-							span.id("child-2"),
+							span.id(Id.of("child-1")),
+							span.id(Id.of("child-2")),
 							createWith(
-									span.id("grandchild")));
+									span.id(Id.of("grandchild"))));
 			var rendered = renderer().render(element);
 
 			assertThat(rendered).isEqualTo(STR."""
@@ -359,8 +374,8 @@ class HtmlRendererTest {
 			var element =
 					createWith(
 							p.text("grandchild"),
-							span.id("child-1"),
-							span.id("child-2"));
+							span.id(Id.of("child-1")),
+							span.id(Id.of("child-2")));
 			var rendered = renderer().render(element);
 
 			assertThat(rendered).isEqualTo(STR."""
@@ -376,9 +391,9 @@ class HtmlRendererTest {
 		default void withChildrenAndOneTextGrandchild_middle() {
 			var element =
 					createWith(
-							span.id("child-1"),
+							span.id(Id.of("child-1")),
 							p.text("grandchild"),
-							span.id("child-3"));
+							span.id(Id.of("child-3")));
 			var rendered = renderer().render(element);
 
 			assertThat(rendered).isEqualTo(STR."""
@@ -394,8 +409,8 @@ class HtmlRendererTest {
 		default void withChildrenAndOneTextGrandchild_last() {
 			var element =
 					createWith(
-							span.id("child-1"),
-							span.id("child-2"),
+							span.id(Id.of("child-1")),
+							span.id(Id.of("child-2")),
 							p.text("grandchild"));
 			var rendered = renderer().render(element);
 
@@ -413,17 +428,17 @@ class HtmlRendererTest {
 			var element =
 					createWith(
 							createWith(
-									span.id("grandchild-1"),
-									span.id("grandchild-2"),
-									span.id("grandchild-3")),
+									span.id(Id.of("grandchild-1")),
+									span.id(Id.of("grandchild-2")),
+									span.id(Id.of("grandchild-3"))),
 							createWith(
-									span.id("grandchild-4"),
-									span.id("grandchild-5"),
-									span.id("grandchild-6")),
+									span.id(Id.of("grandchild-4")),
+									span.id(Id.of("grandchild-5")),
+									span.id(Id.of("grandchild-6"))),
 							createWith(
-									span.id("grandchild-7"),
-									span.id("grandchild-8"),
-									span.id("grandchild-9")));
+									span.id(Id.of("grandchild-7")),
+									span.id(Id.of("grandchild-8")),
+									span.id(Id.of("grandchild-9"))));
 			var rendered = renderer().render(element);
 
 			assertThat(rendered).isEqualTo(STR."""
@@ -445,6 +460,25 @@ class HtmlRendererTest {
 						</\{tag()}>
 					</\{tag()}>
 					""");
+		}
+
+	}
+
+	private static class EmptyStore implements StoreFront {
+
+		@Override
+		public <RESULT extends Record & Data> Document<RESULT> query(RootQuery<RESULT> query) {
+			throw new IllegalStateException("The empty store can't answer queries");
+		}
+
+		@Override
+		public <RESULT extends Record & Data> List<Document<RESULT>> query(CollectionQuery<RESULT> query) {
+			throw new IllegalStateException("The empty store can't answer queries");
+		}
+
+		@Override
+		public Optional<Document<? extends FileData>> getResource(String name) {
+			throw new IllegalStateException("The empty store can't answer queries");
 		}
 
 	}

@@ -1,19 +1,17 @@
 package dev.nipafx.ginevra.render;
 
 import dev.nipafx.ginevra.html.Classes;
+import dev.nipafx.ginevra.html.Id;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static dev.nipafx.ginevra.html.HtmlElement.code;
 import static dev.nipafx.ginevra.html.HtmlElement.pre;
 import static dev.nipafx.ginevra.html.JmlElement.codeBlock;
 import static dev.nipafx.ginevra.html.JmlElement.text;
+import static dev.nipafx.ginevra.render.HtmlRendererTest.RESOLVER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CodeBlockResolverTest {
-
-	private static final ElementResolver RESOLVER = new ElementResolver(Optional.empty());
 
 	@Test
 	void empty() {
@@ -26,11 +24,11 @@ class CodeBlockResolverTest {
 
 	@Test
 	void withId() {
-		var block = codeBlock.id("the-id");
+		var block = codeBlock.id(Id.of("the-id"));
 		var expressed = RESOLVER.express(block);
 
 		assertThat(expressed).isEqualTo(
-				pre.id("the-id").children(code));
+				pre.id(Id.of("the-id")).children(code));
 	}
 
 	@Test

@@ -3,23 +3,16 @@ package dev.nipafx.ginevra.render;
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Code;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.html.Id;
 import org.junit.jupiter.api.Nested;
-
-import java.util.List;
 
 import static dev.nipafx.ginevra.html.HtmlElement.code;
 
 class CodeRendererTest {
 
-	private static final Renderer RENDERER = new Renderer();
 	private static final String TAG = "code";
 
 	static class TestBasics implements HtmlRendererTest.TestBasics {
-
-		@Override
-		public Renderer renderer() {
-			return RENDERER;
-		}
 
 		@Override
 		public String tag() {
@@ -32,8 +25,8 @@ class CodeRendererTest {
 	class IdAndClasses extends TestBasics implements HtmlRendererTest.IdAndClasses<Code> {
 
 		@Override
-		public Code createWith(String id, List<String> classes) {
-			return code.id(id).classes(Classes.of(classes));
+		public Code createWith(Id id, Classes classes) {
+			return code.id(id).classes( classes);
 		}
 
 	}

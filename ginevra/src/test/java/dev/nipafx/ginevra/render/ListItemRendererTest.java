@@ -2,24 +2,17 @@ package dev.nipafx.ginevra.render;
 
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.html.Id;
 import dev.nipafx.ginevra.html.ListItem;
 import org.junit.jupiter.api.Nested;
-
-import java.util.List;
 
 import static dev.nipafx.ginevra.html.HtmlElement.li;
 
 class ListItemRendererTest {
 
-	private static final Renderer RENDERER = new Renderer();
 	private static final String TAG = "li";
 
 	static class TestBasics implements HtmlRendererTest.TestBasics {
-
-		@Override
-		public Renderer renderer() {
-			return RENDERER;
-		}
 
 		@Override
 		public String tag() {
@@ -32,8 +25,8 @@ class ListItemRendererTest {
 	class IdAndClasses extends TestBasics implements HtmlRendererTest.IdAndClasses<ListItem> {
 
 		@Override
-		public ListItem createWith(String id, List<String> classes) {
-			return li.id(id).classes(Classes.of(classes));
+		public ListItem createWith(Id id, Classes classes) {
+			return li.id(id).classes( classes);
 		}
 
 	}

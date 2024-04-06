@@ -4,6 +4,8 @@ import dev.nipafx.ginevra.outline.Document.Data;
 
 public interface Template<DATA extends Record & Data> {
 
-	RenderedDocumentData render(DATA document);
+	Query<DATA> query();
+
+	HtmlDocumentData compose(DATA data);
 
 }

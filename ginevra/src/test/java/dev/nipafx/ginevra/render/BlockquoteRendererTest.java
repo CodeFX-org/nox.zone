@@ -3,23 +3,16 @@ package dev.nipafx.ginevra.render;
 import dev.nipafx.ginevra.html.BlockQuote;
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.html.Id;
 import org.junit.jupiter.api.Nested;
-
-import java.util.List;
 
 import static dev.nipafx.ginevra.html.HtmlElement.blockquote;
 
 class BlockquoteRendererTest {
 
-	private static final Renderer RENDERER = new Renderer();
 	private static final String TAG = "blockquote";
 
 	static class TestBasics implements HtmlRendererTest.TestBasics {
-
-		@Override
-		public Renderer renderer() {
-			return RENDERER;
-		}
 
 		@Override
 		public String tag() {
@@ -32,8 +25,8 @@ class BlockquoteRendererTest {
 	class IdAndClasses extends TestBasics implements HtmlRendererTest.IdAndClasses<BlockQuote> {
 
 		@Override
-		public BlockQuote createWith(String id, List<String> classes) {
-			return blockquote.id(id).classes(Classes.of(classes));
+		public BlockQuote createWith(Id id, Classes classes) {
+			return blockquote.id(id).classes( classes);
 		}
 
 	}

@@ -1,18 +1,24 @@
 package dev.nipafx.ginevra.execution;
 
+import dev.nipafx.ginevra.execution.Step.FilterStep;
+import dev.nipafx.ginevra.execution.Step.MergeStepOne;
+import dev.nipafx.ginevra.execution.Step.MergeStepTwo;
 import dev.nipafx.ginevra.execution.Step.SourceStep;
+import dev.nipafx.ginevra.execution.Step.StoreResourceStep;
 import dev.nipafx.ginevra.execution.Step.StoreStep;
 import dev.nipafx.ginevra.execution.Step.TemplateStep;
 import dev.nipafx.ginevra.execution.Step.TransformStep;
 import dev.nipafx.ginevra.outline.Document;
 import dev.nipafx.ginevra.outline.Document.Data;
+import dev.nipafx.ginevra.outline.Document.FileData;
 import dev.nipafx.ginevra.outline.Outline;
-import dev.nipafx.ginevra.outline.Store;
-import dev.nipafx.ginevra.outline.Store.CollectionQuery;
-import dev.nipafx.ginevra.outline.Store.RootQuery;
+import dev.nipafx.ginevra.outline.Query.CollectionQuery;
+import dev.nipafx.ginevra.outline.Query.RootQuery;
 import dev.nipafx.ginevra.outline.Template;
-import dev.nipafx.ginevra.render.CssFile;
 import dev.nipafx.ginevra.render.Renderer;
+import dev.nipafx.ginevra.render.ResourceFile;
+import dev.nipafx.ginevra.render.ResourceFile.CopiedFile;
+import dev.nipafx.ginevra.render.ResourceFile.CssFile;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -21,8 +27,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static dev.nipafx.ginevra.util.StreamUtils.keepOnly;
@@ -49,36 +56,35 @@ class MapOutline implements Outline {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void run() {
+		runOutlineUntilStorage();
+		renderTemplates();
+	}
+
+	private void runOutlineUntilStorage() {
 		var sourceSteps = stepMap
 				.keySet().stream()
-				.filter(SourceStep.class::isInstance)
-				.map(SourceStep.class::cast)
+				.mapMulti(keepOnly(SourceStep.class))
 				.toList();
-
-		sourceSteps.forEach(step -> step.source().register(doc -> process(step, (Document<?>) doc)));
+		sourceSteps.forEach(step -> step.source().register(doc -> processRecursively(step, (Document<?>) doc)));
 		sourceSteps.forEach(step -> step.source().loadAll());
+	}
 
+	private void renderTemplates() {
 		try {
 			paths.createFolders();
 			stepMap
 					.keySet().stream()
-					.flatMap(keepOnly(TemplateStep.class))
+					.mapMulti(keepOnly(TemplateStep.class))
 					.flatMap(this::generateFromTemplate)
 					// TODO: find out why this cast is needed
-					.forEach((Consumer<TemplatedFile>) this::writeContentFile);
-			renderer
-					.cssFiles()
-					.forEach(this::writeCssFile);
+					.forEach((Consumer<TemplatedFile>) this::writeTemplatedFile);
 		} catch (IOException | UncheckedIOException ex) {
+			// TODO: handle error
+			ex.printStackTrace();
 		}
 	}
 
-	private void process(SourceStep<?> sourceStep, Document<?> doc) {
-		processRecursively(sourceStep, doc);
-		store.commit();
-	}
-
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void processRecursively(Step origin, Document<?> doc) {
 		var steps = stepMap.get(origin);
 		if (steps == null)
@@ -87,18 +93,28 @@ class MapOutline implements Outline {
 		steps.forEach(step -> {
 			switch (step) {
 				case SourceStep _ -> throw new IllegalStateException("No step should map to a source");
-				case TransformStep transformStep -> {
-					if (transformStep.filter().test(doc))
-						transformStep.transformer()
-								.transform(doc)
-								.forEach(transformedDoc -> processRecursively(transformStep, (Document<?>) transformedDoc));
+				case FilterStep filterStep -> {
+					if (filterStep.filter().test(doc.data()))
+						processRecursively(filterStep, doc);
 				}
-				case StoreStep(var filter, var collection) -> {
-					if (((Predicate) filter).test(doc))
-						collection.ifPresentOrElse(
-								col -> store.store(col, doc),
-								() -> store.store(doc)
-						);
+				case TransformStep transformStep -> transformStep
+						.transformer()
+						.transform(doc)
+						.forEach(transformedDoc -> processRecursively(transformStep, (Document<?>) transformedDoc));
+				case MergeStepOne mergeStepOne -> mergeStepOne
+						.merge(doc)
+						.forEach(mergedDoc -> processRecursively(mergeStepOne, (Document<?>) mergedDoc));
+				case MergeStepTwo mergeStepTwo -> mergeStepTwo
+						.merge(doc)
+						.forEach(mergedDoc -> processRecursively(mergeStepTwo, (Document<?>) mergedDoc));
+				case StoreStep(var collection) -> collection.ifPresentOrElse(
+						col -> store.store(col, doc),
+						() -> store.store(doc)
+				);
+				case StoreResourceStep(var naming) -> {
+					var name = (String) ((Function) naming).apply(doc.data());
+					var fileDoc = (Document<? extends FileData>) doc;
+					store.storeResource(name, fileDoc);
 				}
 				case TemplateStep _ -> throw new IllegalStateException("No step should map to a template");
 			}
@@ -106,32 +122,48 @@ class MapOutline implements Outline {
 	}
 
 	private <DATA extends Record & Data> Stream<TemplatedFile> generateFromTemplate(TemplateStep<DATA> templateStep) {
-		return switch (templateStep.query()) {
+		var template = templateStep.template();
+		var results = switch (template.query()) {
 			case CollectionQuery<DATA> collectionQuery -> store
 					.query(collectionQuery).stream()
-					.filter(result -> templateStep.filter().test(result))
-					.map(document -> generateFromTemplate(templateStep.template(), document));
-			case RootQuery<DATA> rootQuery -> {
-				var result = store.query(rootQuery);
-				yield templateStep.filter().test(result)
-						? Stream.of(generateFromTemplate(templateStep.template(), result))
-						: Stream.empty();
-			}
+					.filter(result -> collectionQuery.filter().test(result.data()));
+			case RootQuery<DATA> rootQuery -> Stream.of(store.query(rootQuery));
 		};
+		return results
+				.map(document -> generateFromTemplate(template, document));
 	}
 
 	private <DATA extends Record & Data> TemplatedFile generateFromTemplate(Template<DATA> template, Document<DATA> document) {
-		var renderedId = document.id().transform("template-" + template.getClass().getName());
+		var id = document.id().transform("template-" + template.getClass().getName());
 
-		var renderedDocument = template.render(document.data());
-		var fileContent = renderer.render(renderedDocument.html());
-		var filePath = paths.siteFolder().resolve(renderedDocument.slug() + ".html").toAbsolutePath();
+		var composedDocument = template.compose(document.data());
+		var fileContent = renderer.renderAsDocument(composedDocument.html(), template);
+		var filePath = paths.siteFolder().resolve(composedDocument.slug()).resolve("index.html").toAbsolutePath();
 
-		return new TemplatedFile(filePath, fileContent);
+		return new TemplatedFile(filePath, fileContent.html(), fileContent.referencedResources());
 	}
 
-	private void writeContentFile(TemplatedFile file) {
+	private void writeTemplatedFile(TemplatedFile file) {
 		writeToFile(file.file(), file.content());
+		file
+				.referencedResources()
+				.forEach(res -> {
+					switch (res) {
+						case CopiedFile copiedFile -> copyFile(copiedFile);
+						case CssFile cssFile -> writeCssFile(cssFile);
+					}
+				});
+	}
+
+	private void copyFile(CopiedFile copiedFile) {
+		var target = paths.siteFolder().resolve(copiedFile.target());
+		try {
+			if (!Files.exists(target))
+				Files.copy(copiedFile.source(), target);
+		} catch (IOException ex) {
+			// TODO: handle error
+			ex.printStackTrace();
+		}
 	}
 
 	private void writeCssFile(CssFile cssFile) {
@@ -145,10 +177,11 @@ class MapOutline implements Outline {
 			Files.deleteIfExists(filePath);
 			Files.writeString(filePath, fileContent);
 		} catch (IOException ex) {
+			// TODO: handle error
 			ex.printStackTrace();
 		}
 	}
 
-	private record TemplatedFile(Path file, String content) { }
+	private record TemplatedFile(Path file, String content, Set<ResourceFile> referencedResources) { }
 
 }

@@ -1,11 +1,11 @@
 package dev.nipafx.ginevra.outline;
 
 import dev.nipafx.ginevra.outline.Document.Data;
-import dev.nipafx.ginevra.outline.Document.DataString;
-import dev.nipafx.ginevra.outline.Store.DocCollection;
-import dev.nipafx.ginevra.outline.Store.Query;
+import dev.nipafx.ginevra.outline.Document.FileData;
+import dev.nipafx.ginevra.outline.Document.StringData;
 
 import java.nio.file.Path;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -18,56 +18,51 @@ public interface Outliner {
 	<DATA_OUT extends Record & Data>
 	StepKey<DATA_OUT> source(Source<DATA_OUT> source);
 
-	StepKey<FileData> sourceFileSystem(String name, Path path);
+	<DATA_OUT extends Record & Data>
+	StepKey<DATA_OUT> source(DATA_OUT source);
+
+	StepKey<TextFileData> sourceTextFiles(String name, Path path);
+
+	StepKey<BinaryFileData> sourceBinaryFiles(String name, Path path);
 
 	// transformers
+
+	<DATA extends Record & Data>
+	StepKey<DATA> filter(StepKey<DATA> previous, Predicate<DATA> filter);
 
 	<DATA_IN extends Record & Data, DATA_OUT extends Record & Data>
 	StepKey<DATA_OUT> transform(
 			StepKey<DATA_IN> previous,
-			Transformer<DATA_IN, DATA_OUT> transformer,
-			Predicate<Document<DATA_IN>> filter);
+			Transformer<DATA_IN, DATA_OUT> transformer);
 
-	default <DATA_IN extends Record & Data, DATA_OUT extends Record & Data>
-	StepKey<DATA_OUT> transform(StepKey<DATA_IN> previous, Transformer<DATA_IN, DATA_OUT> transformer) {
-		return transform(previous, transformer, _ -> true);
-	}
+	<DATA_IN extends Record & StringData, DATA_OUT extends Record & Data>
+	StepKey<DATA_OUT> transformMarkdown(StepKey<DATA_IN> previous, Class<DATA_OUT> frontMatterType);
 
-	<DATA_IN extends Record & DataString, DATA_OUT extends Record & Data>
-	StepKey<DATA_OUT> transformMarkdown(StepKey<DATA_IN> previous, Class<DATA_OUT> frontMatterType, Predicate<Document<DATA_IN>> filter);
-
-	default <DATA_IN extends Record & DataString, DATA_OUT extends Record & Data>
-	StepKey<DATA_OUT> transformMarkdown(StepKey<DATA_IN> previous, Class<DATA_OUT> frontMatterType) {
-		return transformMarkdown(previous, frontMatterType, _ -> true);
-	}
+	<DATA_IN_1 extends Record & Data, DATA_IN_2 extends Record & Data, DATA_OUT extends Record & Data>
+	StepKey<DATA_OUT> merge(
+			StepKey<DATA_IN_1> previous1, StepKey<DATA_IN_2> previous2,
+			Merger<DATA_IN_1, DATA_IN_2, DATA_OUT> merger);
 
 	// store
 
 	<DATA_IN extends Record & Data>
-	void store(StepKey<DATA_IN> previous, DocCollection collection, Predicate<Document<DATA_IN>> filter);
-
-	default <DATA_IN extends Record & Data>
-	void store(StepKey<DATA_IN> previous, DocCollection collection) {
-		store(previous, collection, _ -> true);
-	}
+	void store(StepKey<DATA_IN> previous, String collection);
 
 	<DATA_IN extends Record & Data>
-	void store(StepKey<DATA_IN> previous, Predicate<Document<DATA_IN>> filter);
+	void store(StepKey<DATA_IN> previous);
 
-	default <DATA_IN extends Record & Data>
-	void store(StepKey<DATA_IN> previous) {
-		store(previous, _ -> true);
+	<DATA_IN extends Record & FileData>
+	void storeResource(StepKey<DATA_IN> previous, Function<DATA_IN, String> naming);
+
+	default <DATA_IN extends Record & FileData>
+	void storeResource(StepKey<DATA_IN> previous) {
+		storeResource(previous, fileData -> fileData.file().getFileName().toString());
 	}
 
 	// generate
 
 	<DATA extends Record & Data>
-	void generate(Query<DATA> query, Predicate<Document<DATA>> filter, Template<DATA> template);
-
-	default <DATA extends Record & Data>
-	void generate(Query<DATA> query, Template<DATA> template) {
-		generate(query, _ -> true, template);
-	}
+	void generate(Template<DATA> template);
 
 	// build
 

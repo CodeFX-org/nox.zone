@@ -2,24 +2,17 @@ package dev.nipafx.ginevra.render;
 
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.html.Id;
 import dev.nipafx.ginevra.html.Pre;
 import org.junit.jupiter.api.Nested;
-
-import java.util.List;
 
 import static dev.nipafx.ginevra.html.HtmlElement.pre;
 
 class PreRendererTest {
 
-	private static final Renderer RENDERER = new Renderer();
 	private static final String TAG = "pre";
 
 	static class TestBasics implements HtmlRendererTest.TestBasics {
-
-		@Override
-		public Renderer renderer() {
-			return RENDERER;
-		}
 
 		@Override
 		public String tag() {
@@ -32,8 +25,8 @@ class PreRendererTest {
 	class IdAndClasses extends TestBasics implements HtmlRendererTest.IdAndClasses<Pre> {
 
 		@Override
-		public Pre createWith(String id, List<String> classes) {
-			return pre.id(id).classes(Classes.of(classes));
+		public Pre createWith(Id id, Classes classes) {
+			return pre.id(id).classes( classes);
 		}
 
 	}
@@ -47,6 +40,8 @@ class PreRendererTest {
 		}
 
 	}
+
+	// TODO: Make sure the renderer adds no indentation inside <pre> blocksq
 
 	@Nested
 	class Children extends TestBasics implements HtmlRendererTest.Children<Pre> {
