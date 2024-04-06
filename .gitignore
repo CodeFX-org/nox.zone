@@ -42,4 +42,5 @@ hs_err_pid*
 .tool-versions
 
 # Ginevra
+app/
 site/

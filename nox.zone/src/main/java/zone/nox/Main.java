@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Main {
 
-	private static final Path POSTS = Path.of(Main.class.getClassLoader().getResource("posts").getPath());
+	private static final Path POSTS = Path.of("nox.zone/src/main/resources/posts").toAbsolutePath();
 
 	public static void main(String[] args) {
 		var ginevra = Ginevra.initialize(args);
