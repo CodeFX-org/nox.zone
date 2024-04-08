@@ -6,6 +6,7 @@ import dev.nipafx.ginevra.css.CssStyled;
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.CustomSingleElement;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.outline.Resources;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -25,10 +26,13 @@ public record Layout(String title, String description, List<? extends Element> c
 				margin: 0;
 				min-width: 320px;
 			
-				background-color: #222;
 				color: white;
-			
+				background: url(\"""", Resources.include("hex.webp"), """
+			");
+
 				font-size: 18px;
+			
+				--yellow: #fcee0a;
 			}
 			
 			h1 {

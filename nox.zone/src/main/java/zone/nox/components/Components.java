@@ -12,20 +12,28 @@ public class Components {
 
 	public static Layout layout = new Layout(null, null, List.of());
 
+	public static Header header(String text, LocalDateTime dateTime) {
+		return new Header(Optional.empty(), text, dateTime, 1);
+	}
+
+	public static Header header(String text, LocalDateTime dateTime, int level) {
+		return new Header(Optional.empty(), text, dateTime, level);
+	}
+
 	public static Header header(String title, String text, LocalDateTime dateTime) {
-		return new Header(title, text, dateTime, 1);
+		return new Header(Optional.of(title), text, dateTime, 1);
 	}
 
 	public static Header header(String title, String text, LocalDateTime dateTime, int level) {
-		return new Header(title, text, dateTime, level);
+		return new Header(Optional.of(title), text, dateTime, level);
 	}
 
 	public static Header header(Post post) {
-		return new Header(post.title(), post.summary(), post.date(), 1);
+		return new Header(Optional.of(post.title()), post.summary(), post.date(), 1);
 	}
 
 	public static Header header(Post post, int level) {
-		return new Header(post.title(), post.summary(), post.date(), level);
+		return new Header(Optional.of(post.title()), post.summary(), post.date(), level);
 	}
 
 	private static final LocalDateTime FIRST_DAY_2024 = LocalDate.of(2024, 4, 24).atTime(0, 0);

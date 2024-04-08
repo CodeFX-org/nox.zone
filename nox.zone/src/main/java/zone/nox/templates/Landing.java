@@ -8,6 +8,7 @@ import dev.nipafx.ginevra.html.Element;
 import dev.nipafx.ginevra.outline.HtmlDocumentData;
 import dev.nipafx.ginevra.outline.Query;
 import dev.nipafx.ginevra.outline.Query.RootQuery;
+import dev.nipafx.ginevra.outline.Resources;
 import dev.nipafx.ginevra.outline.Template;
 import zone.nox.data.Post;
 import zone.nox.data.Root;
@@ -16,27 +17,47 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static dev.nipafx.ginevra.html.HtmlElement.div;
+import static dev.nipafx.ginevra.html.HtmlElement.img;
 import static java.util.Comparator.comparing;
 import static zone.nox.components.Components.header;
 import static zone.nox.components.Components.layout;
 
 public class Landing implements Template<Root>, CssStyled<Landing.Style> {
 
-	public record Style(Classes container, Classes post, Css css) implements CssStyle { }
+	public record Style(Classes header, Classes posts, Classes post, Classes city, Css css) implements CssStyle { }
+
 	private static final Style STYLE = Css.parse(Style.class, """
-			.container {
+			.header {
+				margin-top: 1em;
+			}
+			
+			.posts {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 			}
 			
 			.post {
-				margin: 1em 0 0;
-				padding: 1em 0 0;
-				border-top: 1px solid yellow;
+				margin: 1.5em 0 0;
+				padding: 1.5em 0 0;
+				border-top: 1px solid var(--yellow);
+				width: 100%
+			}
+			
+			.post:first-child {
+				border-top: 3px double var(--yellow);
+			}
+			
+			.post > *:last-child {
+				margin-bottom: 0;
+			}
+			
+			.city {
+				margin: 2em 0 2em;
+				padding: 1.5em 0 0;
+				border-top: 3px double var(--yellow);
 				width: 100%
 			}
 			""");
@@ -52,18 +73,19 @@ public class Landing implements Template<Root>, CssStyled<Landing.Style> {
 	}
 
 	private Element composePage(Root root) {
-		var children = Stream.concat(
-						Stream
-								.of(header("Radio Nox", "News from the Shadows of Neotropolis.", LocalDateTime.now())),
-						root
-								.posts().stream()
-								.sorted(comparing(Post::date).reversed())
-								.map(this::composePost))
-				.toList();
 		return layout
 				.title("Radio Nox")
 				.description("News from the Shadows of Neotropolis.")
-				.children(div.classes(STYLE.container).children(children));
+				.children(
+						div.classes(STYLE.header).children(
+								header("News from the Shadows of Neotropolis.", LocalDateTime.now())),
+						div.classes(STYLE.posts).children(root
+								.posts().stream()
+								.sorted(comparing(Post::date).reversed())
+								.map(this::composePost)
+								.toList()),
+						img.classes(STYLE.city).src(Resources.include("city.webp"))
+				);
 	}
 
 	private Element composePost(Post post) {
