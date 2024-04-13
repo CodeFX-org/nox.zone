@@ -36,6 +36,10 @@ public class Components {
 		return new Header(Optional.of(post.title()), post.summary(), post.date(), level);
 	}
 
+	public static PostBlock post(Post post) {
+		return new PostBlock(post);
+	}
+
 	private static final LocalDateTime FIRST_DAY_2024 = LocalDate.of(2024, 4, 24).atTime(0, 0);
 	private static final DateTimeFormatter ABSOLUTE_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd / HH:mm 'NTZ'");
 	private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm 'NTZ'");

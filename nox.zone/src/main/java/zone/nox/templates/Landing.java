@@ -10,19 +10,19 @@ import dev.nipafx.ginevra.outline.Query;
 import dev.nipafx.ginevra.outline.Query.RootQuery;
 import dev.nipafx.ginevra.outline.Resources;
 import dev.nipafx.ginevra.outline.Template;
+import zone.nox.Target;
 import zone.nox.data.Post;
 import zone.nox.data.Root;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.img;
 import static java.util.Comparator.comparing;
 import static zone.nox.components.Components.header;
 import static zone.nox.components.Components.layout;
+import static zone.nox.components.Components.post;
 
 public class Landing implements Template<Root>, CssStyled<Landing.Style> {
 
@@ -62,6 +62,12 @@ public class Landing implements Template<Root>, CssStyled<Landing.Style> {
 			}
 			""");
 
+	private final Target target;
+
+	public Landing(Target target) {
+		this.target = target;
+	}
+
 	@Override
 	public Query<Root> query() {
 		return new RootQuery<>(Root.class);
@@ -82,16 +88,15 @@ public class Landing implements Template<Root>, CssStyled<Landing.Style> {
 						div.classes(STYLE.posts).children(root
 								.posts().stream()
 								.sorted(comparing(Post::date).reversed())
-								.map(this::composePost)
+								.map(post -> div
+										.classes(STYLE.post)
+										.children(post(post)
+												.level(2)
+												.embedLocalVideo(target.embedLocalVideo())
+												.embedYouTubeVideo(target.embedYouTubeVideo())))
 								.toList()),
 						img.classes(STYLE.city).src(Resources.include("city.webp"))
 				);
-	}
-
-	private Element composePost(Post post) {
-		var children = new ArrayList<Element>(List.of(header(post, 2)));
-		children.addAll(post.content());
-		return div.classes(STYLE.post).children(children);
 	}
 
 	@Override

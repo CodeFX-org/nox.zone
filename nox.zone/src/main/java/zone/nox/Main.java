@@ -7,18 +7,24 @@ import zone.nox.templates.Landing;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 public class Main {
 
 	private static final Path POSTS = Path.of("nox.zone/src/main/resources/posts").toAbsolutePath();
 	private static final Path RESOURCES = Path.of("nox.zone/src/main/resources/resources").toAbsolutePath();
+	private static final Path VIDEOS = Path.of("nox.zone/src/main/resources/videos").toAbsolutePath();
+
+	public record Config(Optional<String> target) { }
 
 	public static void main(String[] args) {
-		var ginevra = Ginevra.initialize(args);
-		var outliner = ginevra.newOutliner();
+		var ginevraWithConfig = Ginevra.initialize(args, Config.class);
+		var outliner = ginevraWithConfig.ginevra().newOutliner();
 
 		var resources = outliner.sourceBinaryFiles("resources", RESOURCES);
 		outliner.storeResource(resources);
+		var videos = outliner.sourceBinaryFiles("videos", VIDEOS);
+		outliner.storeResource(videos);
 
 		var content = outliner.sourceTextFiles("posts", POSTS);
 		var markdown = outliner.transformMarkdown(content, Post.Md.class);
@@ -27,7 +33,7 @@ public class Main {
 				Post.fromMd(postMd.data()))));
 		outliner.store(posts, "posts");
 
-		outliner.generate(new Landing());
+		outliner.generate(new Landing(Target.from(ginevraWithConfig.config())));
 
 		outliner.build().run();
 	}

@@ -26,7 +26,7 @@ jobs:
       - name: Build project
         run: mvn verify --no-transfer-progress
       - name: Build site
-        run: java --enable-preview -cp "app/*" zone.nox.Main
+        run: java --enable-preview -cp "app/*" zone.nox.Main --target global
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
