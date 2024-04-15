@@ -36,6 +36,7 @@ public class Main {
 
 		outliner.generate(new LandingTemplate());
 		outliner.generate(new PostTemplate(Target.from(ginevraWithConfig.config())));
+		outliner.generateStaticResources(Path.of(""), "favicon.ico");
 
 		outliner.build().run();
 	}
