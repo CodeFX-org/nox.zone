@@ -22,11 +22,11 @@ public record Footer(Id id, Classes classes) implements CustomSingleElement, Css
 				align-items: center;
 				gap: 0.75em;
 			}
-			
+
 			.container > * {
 				margin: 0;
 			}
-			
+
 			.city {
 				width: 100%
 			}
@@ -34,11 +34,6 @@ public record Footer(Id id, Classes classes) implements CustomSingleElement, Css
 
 	public Footer() {
 		this(Id.none(), Classes.none());
-	}
-
-	@Override
-	public Style style() {
-		return STYLE;
 	}
 
 	@Override
@@ -55,6 +50,11 @@ public record Footer(Id id, Classes classes) implements CustomSingleElement, Css
 
 	public Footer classes(Classes classes) {
 		return new Footer(id, classes);
+	}
+
+	@Override
+	public Style style() {
+		return STYLE;
 	}
 
 }

@@ -144,7 +144,7 @@ public class StoreTests {
 	private static <T extends Record & Data> Document<T> asDocument(T data) {
 		return new GeneralDocument<>(new StoreId("test"), data);
 	}
-	
+
 	public record TestData(String content) implements Data { }
 	public record NonCollidingTestData(String moreContent) implements  Data { }
 	public record MergedTestData(String content, String moreContent) implements  Data { }

@@ -27,21 +27,21 @@ public record Layout(String title, String description, List<? extends Element> c
 			body {
 				margin: 0;
 				min-width: 320px;
-			
+
 				font-family: "sans-serif";
 				--alt-font: "space-punk";
 				font-size: 18px;
 				--font-size-large: 24px;
 				--font-size-small: 16px;
 				--gap: 1.5em;
-			
+
 				--yellow: #fcee0a;
 				--gray: #999;
 				color: white;
 				background: url(\"""", Resources.include("hex.webp"), """
 			") #171415;
 			}
-			
+
 			@font-face {
 				font-family: "space-punk";
 				font-style: normal;
@@ -50,88 +50,83 @@ public record Layout(String title, String description, List<? extends Element> c
 			") format("truetype");
 				font-display: swap;
 			}
-			
+
 			h1 {
 				font-size: calc(1.25 * var(--font-size-large));
 				font-weight: bold;
 			}
-			
+
 			h2 {
 				font-size: calc(1 * var(--font-size-large));
 				font-weight: bold;
 			}
-			
+
 			h3 {
 				font-size: calc(0.8 * var(--font-size-large));
 				font-weight: bold;
 			}
-			
+
 			h4 {
 				font-size: calc(0.7 * var(--font-size-large));
 				font-weight: bold;
 			}
-			
+
 			a {
 				color: var(--yellow);
 				text-decoration: none;
 			}
-			
+
 			a:hover {
 				text-decoration: underline;
 			}
-			
+
 			a:visited {
 				color: var(--gray);
 				text-decoration: none;
 			}
-			
+
 			.layout {
 				display: grid;
 				grid-template-columns: 10px 1fr 10px;
 				grid-template-areas:
 					". content .";
 			}
-			
+
 			.page {
 				grid-area: content;
-			
+
 				display: flex;
 				flex-direction: column;
 			}
-			
+
 			.header {
 				margin: var(--gap) 0 var(--gap);
 				padding: 0 0 var(--gap);
 				border-bottom: 3px double var(--yellow);
 			}
-			
+
 			.content {
 				display: flex;
 				flex-direction: column;
 			}
-			
+
 			.footer {
 				margin: var(--gap) 0 var(--gap);
 				padding: var(--gap) 0 0;
 				border-top: 3px double var(--yellow);
 			}
-			
+
 			@media all and (min-width: 620px) {
 				body {
 					--font-size-large: 32px;
 					--gap: 2em;
 				}
-			
+
 			.layout {
 					grid-template-columns: 1fr 600px 1fr;
 				}
 			}
 			""");
-
-	@Override
-	public Style style() {
-		return STYLE;
-	}
 
 	@Override
 	public Element composeSingle() {
@@ -167,6 +162,11 @@ public record Layout(String title, String description, List<? extends Element> c
 
 	public Layout content(Element... children) {
 		return new Layout(this.title, this.description, List.of(children));
+	}
+
+	@Override
+	public Style style() {
+		return STYLE;
 	}
 
 }

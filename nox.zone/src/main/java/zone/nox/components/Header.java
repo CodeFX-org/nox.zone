@@ -25,26 +25,26 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 				align-items: center;
 				gap: 0.75em;
 			}
-			
+
 			.container > * {
 				margin: 0;
 			}
-			
+
 			.logo {
 				width: 60%;
 			}
-			
+
 			.logo > img {
 				width: 100%;
 			}
-			
+
 			.byline {
 				text-align: center;
 				font-size: var(--font-size-large);
 				color: var(--yellow);
 				font-family: var(--alt-font), "sans-serif";
 			}
-			
+
 			.byline > a:visited {
 				color: var(--yellow);
 			}
@@ -52,11 +52,6 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 
 	public Header() {
 		this(Id.none(), Classes.none());
-	}
-
-	@Override
-	public Style style() {
-		return STYLE;
 	}
 
 	@Override
@@ -78,6 +73,11 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 
 	public Header classes(Classes classes) {
 		return new Header(id, classes);
+	}
+
+	@Override
+	public Style style() {
+		return STYLE;
 	}
 
 }

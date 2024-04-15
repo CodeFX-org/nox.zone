@@ -21,34 +21,29 @@ public record PostHeader(Post post) implements CustomSingleElement, CssStyled<Po
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-			
+
 				margin-top: calc(var(--gap) / 2);
 				gap: calc(var(--gap) / 2) 0;
 			}
-			
+
 			.container > * {
 				margin: 0;
 			}
-			
+
 			.title {
 				text-align: center;
 			}
-			
+
 			.date {
 				text-align: center;
 				font-size: var(--font-size-small);
 				color: var(--gray);
 			}
-			
+
 			.summary {
 				font-style: italic;
 			}
 			""");
-
-	@Override
-	public Style style() {
-		return STYLE;
-	}
 
 	@Override
 	public Element composeSingle() {
@@ -66,6 +61,11 @@ public record PostHeader(Post post) implements CustomSingleElement, CssStyled<Po
 			case '.', '!', '?', ':' -> "";
 			default -> ".";
 		};
+	}
+
+	@Override
+	public Style style() {
+		return STYLE;
 	}
 
 }

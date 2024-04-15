@@ -24,26 +24,26 @@ public record PostBlock(Post post) implements CustomSingleElement, CssStyled<Pos
 					"index title title"
 					".     date  more";
 			}
-			
+
 			.index {
 				grid-area: index;
 				margin-right: 0.5em;
 				font-family: var(--alt-font), "sans-serif";
 				font-size: var(--font-size-large);
 			}
-			
+
 			.title {
 				grid-area: title;
 				font-size: var(--font-size-large);
 				font-weight: bold;
 			}
-			
+
 			.date {
 				grid-area: date;
 				font-size: var(--font-size-small);
 				color: var(--gray);
 			}
-			
+
 			.more {
 				grid-area: more;
 				font-family: var(--alt-font), "sans-serif";

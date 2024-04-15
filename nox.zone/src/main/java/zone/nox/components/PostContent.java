@@ -28,18 +28,18 @@ public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTu
 			.header {
 				margin-bottom: 1em;
 			}
-			
+
 			.localVideo {
 				margin: 0 2em 1em;
 				border: 1px solid var(--yellow);
 			}
-			
+
 			.localVideo > video {
 				display: block;
 				width: 100% !important;
 				height: auto !important;
 			}
-			
+
 			/* the second container (below) can't have margins
 				because they screw up the 16:9 padding-top computation,
 				so we have *another* container, just for the margins */
@@ -47,14 +47,14 @@ public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTu
 				margin: 0 2em 1em;
 				border: 1px solid var(--yellow);
 			}
-			
+
 			.youTubeVideo {
 				position: relative;
 				overflow: hidden;
 				/* 16:9 portrait aspect ratio */
 				padding-top: 177.78%;
 			}
-			
+
 			.youTubeVideo > iframe {
 				display: block;
 				position: absolute;
@@ -64,7 +64,7 @@ public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTu
 				height: 100%;
 				border: 0;
 			}
-			
+
 			.content > *:first-child {
 				margin-top: 0;
 			}

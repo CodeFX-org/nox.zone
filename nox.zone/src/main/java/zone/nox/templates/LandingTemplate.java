@@ -26,11 +26,11 @@ public class LandingTemplate implements Template<Root>, CssStyled<LandingTemplat
 			.posts {
 				display: flex;
 				flex-direction: column;
-			
+
 				margin: calc(var(--gap) / 2) 0;
 				gap: var(--gap);
 			}
-			
+
 			.post {
 				width: 100%
 			}

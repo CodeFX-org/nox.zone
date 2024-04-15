@@ -25,7 +25,7 @@ public record PostTemplate(Target target) implements Template<Post>, CssStyled<P
 				margin-top: var(--gap);
 				font-family: var(--alt-font), "sans-serif";
 			}
-			
+
 			.back:visited {
 				color: var(--yellow);
 			}
