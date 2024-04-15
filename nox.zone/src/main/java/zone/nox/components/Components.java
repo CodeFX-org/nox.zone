@@ -6,38 +6,25 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 public class Components {
 
 	public static Layout layout = new Layout(null, null, List.of());
 
-	public static Header header(String text, LocalDateTime dateTime) {
-		return new Header(Optional.empty(), text, dateTime, 1);
-	}
+	public static Header header = new Header();
 
-	public static Header header(String text, LocalDateTime dateTime, int level) {
-		return new Header(Optional.empty(), text, dateTime, level);
-	}
+	public static Footer footer = new Footer();
 
-	public static Header header(String title, String text, LocalDateTime dateTime) {
-		return new Header(Optional.of(title), text, dateTime, 1);
-	}
-
-	public static Header header(String title, String text, LocalDateTime dateTime, int level) {
-		return new Header(Optional.of(title), text, dateTime, level);
-	}
-
-	public static Header header(Post post) {
-		return new Header(Optional.of(post.title()), post.summary(), post.date(), 1);
-	}
-
-	public static Header header(Post post, int level) {
-		return new Header(Optional.of(post.title()), post.summary(), post.date(), level);
-	}
-
-	public static PostBlock post(Post post) {
+	public static PostBlock postBlock(Post post) {
 		return new PostBlock(post);
+	}
+
+	public static PostContent postContent(Post post) {
+		return new PostContent(post);
+	}
+
+	public static PostHeader postHeader(Post post) {
+		return new PostHeader(post);
 	}
 
 	private static final LocalDateTime FIRST_DAY_2024 = LocalDate.of(2024, 4, 24).atTime(0, 0);

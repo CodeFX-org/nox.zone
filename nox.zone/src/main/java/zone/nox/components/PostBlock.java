@@ -4,117 +4,61 @@ import dev.nipafx.ginevra.css.Css;
 import dev.nipafx.ginevra.css.CssStyle;
 import dev.nipafx.ginevra.css.CssStyled;
 import dev.nipafx.ginevra.html.Classes;
-import dev.nipafx.ginevra.html.CustomElement;
+import dev.nipafx.ginevra.html.CustomSingleElement;
 import dev.nipafx.ginevra.html.Element;
-import dev.nipafx.ginevra.html.Video.Preload;
-import dev.nipafx.ginevra.outline.Resources;
 import zone.nox.data.Post;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static dev.nipafx.ginevra.html.HtmlElement.a;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
-import static dev.nipafx.ginevra.html.HtmlElement.video;
-import static dev.nipafx.ginevra.html.JmlElement.html;
-import static dev.nipafx.ginevra.html.JmlElement.nothing;
-import static zone.nox.components.Components.header;
+import static dev.nipafx.ginevra.html.HtmlElement.span;
+import static zone.nox.components.Components.format;
 
-public record PostBlock(Post post, int level, boolean embedLocalVideo, boolean embedYouTubeVideo) implements CustomElement, CssStyled<PostBlock.Style> {
+public record PostBlock(Post post) implements CustomSingleElement, CssStyled<PostBlock.Style> {
 
-	public record Style(Classes localVideo, Classes youTubeVideoContainer, Classes youTubeVideo, Css css) implements CssStyle { }
+	public record Style(Classes block, Classes index, Classes title, Classes date, Classes more, Css css) implements CssStyle { }
 	private static final Style STYLE = Css.parse(Style.class, """
-			.localVideo {
-				margin: 1em 2em 0.5em;
-				border: 1px dotted var(--yellow);
+			.block {
+				display: grid;
+				grid-template-columns: auto 1fr auto;
+				grid-template-areas:
+					"index title title"
+					".     date  more";
 			}
 			
-			.localVideo > video {
-				display: block;
-				width: 100% !important;
-				height: auto !important;
+			.index {
+				grid-area: index;
+				margin-right: 0.5em;
+				font-size: var(--font-size-large);
+				font-weight: bold;
 			}
 			
-			/* the second container (below) can't have margins
-				because they screw up the 16:9 padding-top computation,
-				so we have *another* container, just for the margins */
-			.youTubeVideoContainer {
-				margin: 1em 2em 0.5em;
-				border: 1px dotted var(--yellow);
+			.title {
+				grid-area: title;
+				font-size: var(--font-size-large);
+				font-weight: bold;
 			}
 			
-			.youTubeVideo {
-				position: relative;
-				overflow: hidden;
-				/* 16:9 portrait aspect ratio */
-				padding-top: 177.78%;
+			.date {
+				grid-area: date;
+				font-size: var(--font-size-small);
+				color: var(--gray);
 			}
 			
-			.youTubeVideo > iframe {
-				display: block;
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				border: 0;
+			.more {
+				grid-area: more;
+				font-size: var(--font-size-small);
+				text-align: end;
 			}
 			""");
 
-	public PostBlock(Post post) {
-		this(post, 1, false, false);
-	}
-
 	@Override
-	public List<Element> compose() {
-		var children = new ArrayList<Element>();
-		children.add(header(post, level));
-		if (embedLocalVideo)
-			children.add(embeddedLocalVideo());
-		if (embedYouTubeVideo)
-			children.add(embeddedYouTubeVideo());
-		children.addAll(post.content());
-		return children;
-	}
-
-	private Element embeddedLocalVideo() {
-		return post
-				.localVideo()
-				.<Element> map(local -> div
-						.classes(STYLE.localVideo())
-						.children(video
-								.src(Resources.include(local + ".mp4"))
-								.poster(Resources.include(local + ".jpg"))
-								.height(711)
-								.width(400)
-								.preload(Preload.NONE)
-								.controls(true)))
-				.orElse(nothing);
-	}
-
-	private Element embeddedYouTubeVideo() {
-		return post
-				.youTubeId()
-				.<Element>map(id -> div
-						.classes(STYLE.youTubeVideoContainer())
-						.children(div
-								.classes(STYLE.youTubeVideo())
-								.children(html.literal("""
-										<iframe src="https://www.youtube.com/embed/%s" frameborder="0" allowfullscreen allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture">
-										</iframe>
-										""".formatted(id)))))
-				.orElse(nothing);
-	}
-
-	public PostBlock level(int level) {
-		return new PostBlock(post, level, embedLocalVideo, embedYouTubeVideo);
-	}
-
-	public PostBlock embedLocalVideo(boolean embedLocalVideo) {
-		return new PostBlock(post, level, embedLocalVideo, embedYouTubeVideo);
-	}
-
-	public PostBlock embedYouTubeVideo(boolean embedYouTubeVideo) {
-		return new PostBlock(post, level, embedLocalVideo, embedYouTubeVideo);
+	public Element composeSingle() {
+		return div.classes(STYLE.block).children(
+				a.classes(STYLE.index).href(post.slug().toString()).text("#%03d".formatted(post.index())),
+				span.classes(STYLE.title).text(post.title()),
+				span.classes(STYLE.date).text(format(post.date())),
+				a.classes(STYLE.more).href(post.slug().toString()).text("More »")
+		);
 	}
 
 	@Override

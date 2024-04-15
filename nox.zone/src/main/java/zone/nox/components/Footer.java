@@ -9,14 +9,12 @@ import dev.nipafx.ginevra.html.Element;
 import dev.nipafx.ginevra.html.Id;
 import dev.nipafx.ginevra.outline.Resources;
 
-import static dev.nipafx.ginevra.html.HtmlElement.a;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.img;
-import static dev.nipafx.ginevra.html.HtmlElement.p;
 
-public record Header(Id id, Classes classes) implements CustomSingleElement, CssStyled<Header.Style> {
+public record Footer(Id id, Classes classes) implements CustomSingleElement, CssStyled<Footer.Style> {
 
-	public record Style(Classes container, Classes title, Classes logo, Classes byline, Css css) implements CssStyle { }
+	public record Style(Classes container, Classes city, Css css) implements CssStyle { }
 	private static final Style STYLE = Css.parse(Style.class, """
 			.container {
 				display: flex;
@@ -29,21 +27,12 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 				margin: 0;
 			}
 			
-			.logo {
-				width: 60%;
-			}
-			
-			.logo > img {
-				width: 100%;
-			}
-			
-			.byline {
-				text-align: center;
-				font-size: var(--font-size-large);
+			.city {
+				width: 100%
 			}
 			""");
 
-	public Header() {
+	public Footer() {
 		this(Id.none(), Classes.none());
 	}
 
@@ -57,18 +46,15 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 		return div
 				.id(id)
 				.classes(classes.plus(STYLE.container))
-				.children(
-						a.classes(STYLE.logo).href("/").children(
-								img.src(Resources.include("logo.webp"))),
-						p.classes(STYLE.byline).text("News from the Shadows of Neotropolis"));
+				.children(img.classes(STYLE.city).src(Resources.include("city.webp")));
 	}
 
-	public Header id(Id id) {
-		return new Header(id, classes);
+	public Footer id(Id id) {
+		return new Footer(id, classes);
 	}
 
-	public Header classes(Classes classes) {
-		return new Header(id, classes);
+	public Footer classes(Classes classes) {
+		return new Footer(id, classes);
 	}
 
 }

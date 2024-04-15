@@ -3,7 +3,8 @@ package zone.nox;
 import dev.nipafx.ginevra.Ginevra;
 import dev.nipafx.ginevra.outline.GeneralDocument;
 import zone.nox.data.Post;
-import zone.nox.templates.Landing;
+import zone.nox.templates.LandingTemplate;
+import zone.nox.templates.PostTemplate;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -33,7 +34,8 @@ public class Main {
 				Post.fromMd(postMd.data()))));
 		outliner.store(posts, "posts");
 
-		outliner.generate(new Landing(Target.from(ginevraWithConfig.config())));
+		outliner.generate(new LandingTemplate());
+		outliner.generate(new PostTemplate(Target.from(ginevraWithConfig.config())));
 
 		outliner.build().run();
 	}
