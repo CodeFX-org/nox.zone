@@ -28,8 +28,8 @@ public record PostBlock(Post post) implements CustomSingleElement, CssStyled<Pos
 			.index {
 				grid-area: index;
 				margin-right: 0.5em;
+				font-family: var(--alt-font), "sans-serif";
 				font-size: var(--font-size-large);
-				font-weight: bold;
 			}
 			
 			.title {
@@ -46,6 +46,7 @@ public record PostBlock(Post post) implements CustomSingleElement, CssStyled<Pos
 			
 			.more {
 				grid-area: more;
+				font-family: var(--alt-font), "sans-serif";
 				font-size: var(--font-size-small);
 				text-align: end;
 			}
@@ -57,7 +58,7 @@ public record PostBlock(Post post) implements CustomSingleElement, CssStyled<Pos
 				a.classes(STYLE.index).href(post.slug().toString()).text("#%03d".formatted(post.index())),
 				span.classes(STYLE.title).text(post.title()),
 				span.classes(STYLE.date).text(format(post.date())),
-				a.classes(STYLE.more).href(post.slug().toString()).text("More »")
+				a.classes(STYLE.more).href(post.slug().toString()).text("More >>")
 		);
 	}
 

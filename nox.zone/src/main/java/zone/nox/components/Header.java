@@ -13,6 +13,7 @@ import static dev.nipafx.ginevra.html.HtmlElement.a;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.img;
 import static dev.nipafx.ginevra.html.HtmlElement.p;
+import static dev.nipafx.ginevra.html.JmlElement.text;
 
 public record Header(Id id, Classes classes) implements CustomSingleElement, CssStyled<Header.Style> {
 
@@ -40,6 +41,12 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 			.byline {
 				text-align: center;
 				font-size: var(--font-size-large);
+				color: var(--yellow);
+				font-family: var(--alt-font), "sans-serif";
+			}
+			
+			.byline > a:visited {
+				color: var(--yellow);
 			}
 			""");
 
@@ -60,7 +67,9 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 				.children(
 						a.classes(STYLE.logo).href("/").children(
 								img.src(Resources.include("logo.webp"))),
-						p.classes(STYLE.byline).text("News from the Shadows of Neotropolis"));
+						p.classes(STYLE.byline).children(
+								text.text("News from the Shadows of "),
+								a.href("https://www.neotropolis.com").text("Neotropolis")));
 	}
 
 	public Header id(Id id) {

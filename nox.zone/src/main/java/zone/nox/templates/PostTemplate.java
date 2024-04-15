@@ -23,6 +23,7 @@ public record PostTemplate(Target target) implements Template<Post>, CssStyled<P
 	private static final Style STYLE = Css.parse(Style.class, """
 			.back {
 				margin-top: var(--gap);
+				font-family: var(--alt-font), "sans-serif";
 			}
 			
 			.back:visited {

@@ -28,6 +28,8 @@ public record Layout(String title, String description, List<? extends Element> c
 				margin: 0;
 				min-width: 320px;
 			
+				font-family: "sans-serif";
+				--alt-font: "space-punk";
 				font-size: 18px;
 				--font-size-large: 24px;
 				--font-size-small: 16px;
@@ -38,6 +40,15 @@ public record Layout(String title, String description, List<? extends Element> c
 				color: white;
 				background: url(\"""", Resources.include("hex.webp"), """
 			") #171415;
+			}
+			
+			@font-face {
+				font-family: "space-punk";
+				font-style: normal;
+				font-weight: normal;
+				src: url(\"""", Resources.include("space-punk.regular.ttf"), """
+			") format("truetype");
+				font-display: swap;
 			}
 			
 			h1 {
