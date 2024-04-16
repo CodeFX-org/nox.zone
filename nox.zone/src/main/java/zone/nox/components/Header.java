@@ -17,13 +17,12 @@ import static dev.nipafx.ginevra.html.JmlElement.text;
 
 public record Header(Id id, Classes classes) implements CustomSingleElement, CssStyled<Header.Style> {
 
-	public record Style(Classes container, Classes title, Classes logo, Classes byline, Css css) implements CssStyle { }
+	public record Style(Classes container, Classes title, Classes logo, Classes byline, Classes social, Css css) implements CssStyle { }
 	private static final Style STYLE = Css.parse(Style.class, """
 			.container {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-				gap: 0.75em;
 			}
 
 			.container > * {
@@ -39,6 +38,7 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 			}
 
 			.byline {
+				margin-top: 0.25em;
 				text-align: center;
 				font-size: var(--font-size-large);
 				color: var(--yellow);
@@ -47,6 +47,29 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 
 			.byline > a:visited {
 				color: var(--yellow);
+			}
+
+			.social {
+				margin-top: 0.75em;
+				display: flex;
+				flex-direction: row;
+			}
+
+			.social a {
+				display: block;
+				margin: 0 5px;
+				padding: 5px;
+				border: 1px solid transparent;
+				border-radius: 5px;
+			}
+
+			.social a:hover {
+				border-color: var(--yellow);
+			}
+
+			.social img {
+				display: block;
+				width: calc(var(--font-size-large));
 			}
 			""");
 
@@ -64,7 +87,14 @@ public record Header(Id id, Classes classes) implements CustomSingleElement, Css
 								img.src(Resources.include("logo.webp"))),
 						p.classes(STYLE.byline).children(
 								text.text("News from the Shadows of "),
-								a.href("https://www.neotropolis.com").text("Neotropolis")));
+								a.href("https://www.neotropolis.com").text("Neotropolis")),
+						div.classes(STYLE.social).children(
+								a.href("https://www.tiktok.com/@radionox").children(img.src(Resources.include("tiktok.png"))),
+								a.href("https://www.youtube.com/@radiorox").children(img.src(Resources.include("youtube.png"))),
+								a.href("https://www.facebook.com/profile.php?id=61556212299318").children(img.src(Resources.include("facebook.png"))),
+								a.href("https://twitter.com/RadioNoxx").children(img.src(Resources.include("twitter.png"))),
+								a.href("https://mastodon.art/@radionox").children(img.src(Resources.include("mastodon.png"))),
+								a.href("https://bsky.app/profile/radionox.bsky.social").children(img.src(Resources.include("bluesky.png")))));
 	}
 
 	public Header id(Id id) {

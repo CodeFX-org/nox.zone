@@ -14,6 +14,7 @@ public class Main {
 
 	private static final Path POSTS = Path.of("nox.zone/src/main/resources/posts").toAbsolutePath();
 	private static final Path RESOURCES = Path.of("nox.zone/src/main/resources/resources").toAbsolutePath();
+	private static final Path SOCIAL_LINKS = RESOURCES.resolve("social-icons");
 	private static final Path VIDEOS = Path.of("nox.zone/src/main/resources/videos").toAbsolutePath();
 
 	public record Config(Optional<String> target) { }
@@ -24,6 +25,8 @@ public class Main {
 
 		var resources = outliner.sourceBinaryFiles("resources", RESOURCES);
 		outliner.storeResource(resources);
+		var socialIcons = outliner.sourceBinaryFiles("social-icons", SOCIAL_LINKS);
+		outliner.storeResource(socialIcons);
 		var videos = outliner.sourceBinaryFiles("videos", VIDEOS);
 		outliner.storeResource(videos);
 
