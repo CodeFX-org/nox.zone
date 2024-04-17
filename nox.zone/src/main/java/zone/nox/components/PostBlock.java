@@ -19,7 +19,7 @@ public record PostBlock(Post post) implements CustomSingleElement, CssStyled<Pos
 	private static final Style STYLE = Css.parse(Style.class, """
 			.block {
 				display: grid;
-				grid-template-columns: auto 1fr auto;
+				grid-template-columns: minmax(5em,auto) 1fr auto;
 				grid-template-areas:
 					"index title title"
 					".     date  more";
