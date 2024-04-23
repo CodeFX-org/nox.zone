@@ -38,6 +38,17 @@ public record PostBlock(Post post) implements CustomSingleElement, CssStyled<Pos
 				font-weight: bold;
 			}
 
+			a.title {
+				color: white;
+			}
+			a.title:hover {
+				color: white;
+				text-decoration: none;
+			}
+			a.title:visited {
+				color: white;
+			}
+
 			.date {
 				grid-area: date;
 				font-size: var(--font-size-small);
@@ -56,7 +67,7 @@ public record PostBlock(Post post) implements CustomSingleElement, CssStyled<Pos
 	public Element composeSingle() {
 		return div.classes(STYLE.block).children(
 				a.classes(STYLE.index).href(post.slug().toString()).text("#%03d".formatted(post.index())),
-				span.classes(STYLE.title).text(post.title()),
+				a.classes(STYLE.title).href(post.slug().toString()).text(post.title()),
 				span.classes(STYLE.date).text(format(post.date())),
 				a.classes(STYLE.more).href(post.slug().toString()).text("More >>")
 		);
