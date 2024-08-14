@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 public class Components {
 
@@ -19,12 +20,10 @@ public class Components {
 		return new PostBlock(post);
 	}
 
+	public static PageHeader pageHeader = new PageHeader("", "", Optional.empty());
+
 	public static PostContent postContent(Post post) {
 		return new PostContent(post);
-	}
-
-	public static PostHeader postHeader(Post post) {
-		return new PostHeader(post);
 	}
 
 	private static final LocalDateTime FIRST_DAY_2024 = LocalDate.of(2024, 4, 24).atTime(0, 0);

@@ -8,12 +8,15 @@ import dev.nipafx.ginevra.html.CustomSingleElement;
 import dev.nipafx.ginevra.html.Element;
 import zone.nox.data.Post;
 
+import java.util.Optional;
+
+import static dev.nipafx.ginevra.html.GmlElement.nothing;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.h1;
 import static dev.nipafx.ginevra.html.HtmlElement.p;
 import static zone.nox.components.Components.format;
 
-public record PostHeader(Post post) implements CustomSingleElement, CssStyled<PostHeader.Style> {
+public record PageHeader(String title, String summary, Optional<String> dateLine) implements CustomSingleElement, CssStyled<PageHeader.Style> {
 
 	public record Style(Classes container, Classes title, Classes date, Classes summary, Css css) implements CssStyle { }
 	private static final Style STYLE = Css.parse(Style.class, """
@@ -50,9 +53,9 @@ public record PostHeader(Post post) implements CustomSingleElement, CssStyled<Po
 		return div
 				.classes(STYLE.container)
 				.children(
-						h1.classes(STYLE.title).text(post().title()),
-						p.classes(STYLE.date).text("#%03d / %s".formatted(post.index(), format(post.date()))),
-						p.classes(STYLE.summary).text(post().summary() + period(post().summary()))
+						h1.classes(STYLE.title).text(title),
+						dateLine.<Element> map(p.classes(STYLE.date)::text).orElse(nothing),
+						p.classes(STYLE.summary).text(summary + period(summary))
 				);
 	}
 
@@ -61,6 +64,23 @@ public record PostHeader(Post post) implements CustomSingleElement, CssStyled<Po
 			case '.', '!', '?', ':' -> "";
 			default -> ".";
 		};
+	}
+
+	public PageHeader summary(String summary) {
+		return new PageHeader(title, summary, dateLine);
+	}
+
+	public PageHeader title(String title) {
+		return new PageHeader(title, summary, dateLine);
+	}
+
+	public PageHeader dateLine(String dateLine) {
+		return new PageHeader(title, summary, Optional.of(dateLine));
+	}
+
+	public PageHeader post(Post post) {
+		var dateLine = "#%03d / %s".formatted(post.index(), format(post.date()));
+		return new PageHeader(post.title(), post.summary(), Optional.of(dateLine));
 	}
 
 	@Override

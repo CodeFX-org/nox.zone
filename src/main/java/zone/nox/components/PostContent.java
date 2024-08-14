@@ -16,7 +16,7 @@ import static dev.nipafx.ginevra.html.GmlElement.html;
 import static dev.nipafx.ginevra.html.GmlElement.nothing;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.video;
-import static zone.nox.components.Components.postHeader;
+import static zone.nox.components.Components.pageHeader;
 
 public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTubeVideo) implements CustomElement, CssStyled<PostContent.Style> {
 
@@ -79,7 +79,7 @@ public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTu
 	@Override
 	public List<Element> compose() {
 		return List.of(
-				div.classes(STYLE.header).children(postHeader(post)),
+				div.classes(STYLE.header).children(pageHeader.post(post)),
 				embeddedLocalVideo(),
 				embeddedYouTubeVideo(),
 				div.classes(STYLE.content).children(post.content().elements()));

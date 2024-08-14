@@ -5,6 +5,7 @@ import dev.nipafx.ginevra.config.SiteConfiguration;
 import dev.nipafx.ginevra.outline.Outline;
 import dev.nipafx.ginevra.outline.Outliner;
 import zone.nox.data.Post;
+import zone.nox.templates.FourOhFour;
 import zone.nox.templates.LandingTemplate;
 import zone.nox.templates.PostTemplate;
 
@@ -47,6 +48,7 @@ public class Main implements SiteConfiguration {
 
 		outliner.generate(new LandingTemplate());
 		outliner.generate(new PostTemplate(Target.from(config)));
+		outliner.generate(new FourOhFour());
 		outliner.generateStaticResources(Path.of(""), "favicon.ico");
 
 		return outliner.build();
