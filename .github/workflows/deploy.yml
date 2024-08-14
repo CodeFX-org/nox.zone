@@ -22,7 +22,7 @@ jobs:
         uses: oracle-actions/setup-java@v1
         with:
           website: jdk.java.net
-          release: EA
+          release: 23
       - name: Build project
         run: mvn verify --no-transfer-progress
       - name: Build site
