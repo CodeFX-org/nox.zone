@@ -1,13 +1,11 @@
 package zone.nox.data;
 
-import dev.nipafx.ginevra.html.Element;
 import dev.nipafx.ginevra.outline.Document;
 import dev.nipafx.ginevra.outline.HtmlContent;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
 
 import static java.util.function.Predicate.not;

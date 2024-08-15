@@ -8,7 +8,7 @@ import dev.nipafx.ginevra.html.Element;
 import dev.nipafx.ginevra.outline.HtmlPage;
 import dev.nipafx.ginevra.outline.Query;
 import dev.nipafx.ginevra.outline.Query.RootQuery;
-import dev.nipafx.ginevra.outline.Template;
+import dev.nipafx.ginevra.outline.QuerySingleTemplate;
 import zone.nox.data.Post;
 import zone.nox.data.Root;
 
@@ -19,7 +19,7 @@ import static java.util.Comparator.comparing;
 import static zone.nox.components.Components.layout;
 import static zone.nox.components.Components.postBlock;
 
-public class LandingTemplate implements Template<Root>, CssStyled<LandingTemplate.Style> {
+public class LandingTemplate implements QuerySingleTemplate<Root>, CssStyled<LandingTemplate.Style> {
 
 	public record Style(Classes posts, Classes post, Css css) implements CssStyle { }
 	private static final Style STYLE = Css.parse(Style.class, """
@@ -42,7 +42,7 @@ public class LandingTemplate implements Template<Root>, CssStyled<LandingTemplat
 	}
 
 	@Override
-	public HtmlPage compose(Root root) {
+	public HtmlPage composeSingle(Root root) {
 		return new HtmlPage(Path.of(""), composePage(root));
 	}
 

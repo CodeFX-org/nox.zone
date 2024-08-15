@@ -8,7 +8,7 @@ import dev.nipafx.ginevra.html.Element;
 import dev.nipafx.ginevra.outline.HtmlPage;
 import dev.nipafx.ginevra.outline.Query;
 import dev.nipafx.ginevra.outline.Query.CollectionQuery;
-import dev.nipafx.ginevra.outline.Template;
+import dev.nipafx.ginevra.outline.QuerySingleTemplate;
 import zone.nox.Target;
 import zone.nox.data.Post;
 
@@ -16,9 +16,10 @@ import static dev.nipafx.ginevra.html.HtmlElement.a;
 import static zone.nox.components.Components.layout;
 import static zone.nox.components.Components.postContent;
 
-public record PostTemplate(Target target) implements Template<Post>, CssStyled<PostTemplate.Style> {
+public record PostTemplate(Target target) implements QuerySingleTemplate<Post>, CssStyled<PostTemplate.Style> {
 
 	public record Style(Classes back, Css css) implements CssStyle { }
+
 	private static final Style STYLE = Css.parse(Style.class, """
 			.back {
 				margin-top: var(--gap);
@@ -36,7 +37,7 @@ public record PostTemplate(Target target) implements Template<Post>, CssStyled<P
 	}
 
 	@Override
-	public HtmlPage compose(Post post) {
+	public HtmlPage composeSingle(Post post) {
 		return new HtmlPage(post.slug(), composePage(post));
 	}
 
