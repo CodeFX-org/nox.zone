@@ -11,7 +11,7 @@ import java.util.Optional;
 import static java.util.function.Predicate.not;
 
 public record Post(
-		String title, String summary, Path slug, Integer index, String name, LocalDateTime date,
+		String title, String summary, String slug, Integer index, String name, LocalDateTime date,
 		Optional<String> localFile, Optional<String> youTubeId, HtmlContent content)
 		implements Document {
 
@@ -21,7 +21,7 @@ public record Post(
 		var fileNameParts = getFileNameParts(post);
 		var index = Integer.parseInt(fileNameParts[0]);
 		var name = fileNameParts[2];
-		var slug = Path.of("%03d".formatted(index));
+		var slug = "%03d".formatted(index);
 		var date = LocalDateTime.parse(fileNameParts[1], DATE_FORMAT);
 		var localFile = post
 				.localFile()

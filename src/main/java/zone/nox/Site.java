@@ -6,12 +6,13 @@ import dev.nipafx.ginevra.outline.Outline;
 import dev.nipafx.ginevra.outline.Outliner;
 import zone.nox.data.Post;
 import zone.nox.templates.FourOhFour;
-import zone.nox.templates.LandingTemplate;
-import zone.nox.templates.PostTemplate;
+import zone.nox.templates.LandingPage;
+import zone.nox.templates.PostPage;
 
+import java.net.URI;
 import java.nio.file.Path;
 
-public class Main implements SiteConfiguration {
+public class Site implements SiteConfiguration {
 
 	private static final Path POSTS = Path.of("src/main/resources/posts").toAbsolutePath();
 	private static final Path RESOURCES = Path.of("src/main/resources/resources").toAbsolutePath();
@@ -20,25 +21,30 @@ public class Main implements SiteConfiguration {
 
 	private final Config config;
 
-	public Main(Config config) {
+	public Site(Config config) {
 		this.config = config;
 	}
 
 	public static void main(String[] args) {
-		Ginevra.build(Main.class, args);
+		Ginevra.build(Site.class, args);
+	}
+
+	@Override
+	public URI url() {
+		return URI.create("https://nox.zone");
 	}
 
 	@Override
 	public Outline createOutline(Outliner outliner) {
 		outliner
 				.sourceBinaryFiles("resources", RESOURCES)
-				.storeResource();
+				.storeResource(res -> res.file().getFileName().toString());
 		outliner
 				.sourceBinaryFiles("social-icons", SOCIAL_LINKS)
-				.storeResource();
+				.storeResource(res -> res.file().getFileName().toString());
 		outliner
 				.sourceBinaryFiles("videos", VIDEOS)
-				.storeResource();
+				.storeResource(res -> res.file().getFileName().toString());
 
 		outliner
 				.sourceTextFiles("posts", POSTS)
@@ -46,8 +52,8 @@ public class Main implements SiteConfiguration {
 				.transform("parse-post", Post::fromMd)
 				.store("posts");
 
-		outliner.generate(new LandingTemplate());
-		outliner.generate(new PostTemplate(Target.from(config)));
+		outliner.generate(new LandingPage());
+		outliner.generate(new PostPage(Target.from(config)));
 		outliner.generate(new FourOhFour());
 		outliner.generateStaticResources(Path.of(""), "favicon.ico");
 

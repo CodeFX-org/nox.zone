@@ -2,9 +2,9 @@ package zone.nox.components;
 
 import dev.nipafx.ginevra.css.Css;
 import dev.nipafx.ginevra.css.CssStyle;
-import dev.nipafx.ginevra.css.CssStyled;
+import dev.nipafx.ginevra.css.StyledWith;
 import dev.nipafx.ginevra.html.Classes;
-import dev.nipafx.ginevra.html.CustomSingleElement;
+import dev.nipafx.ginevra.html.Component;
 import dev.nipafx.ginevra.html.Element;
 import dev.nipafx.ginevra.html.Id;
 import dev.nipafx.ginevra.outline.Resources;
@@ -12,10 +12,12 @@ import dev.nipafx.ginevra.outline.Resources;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.img;
 
-public record Footer(Id id, Classes classes) implements CustomSingleElement, CssStyled<Footer.Style> {
+public record Footer(Id id, Classes classes) implements Component {
 
 	public record Style(Classes container, Classes city, Css css) implements CssStyle { }
-	private static final Style STYLE = Css.parse(Style.class, """
+
+	@StyledWith
+	public static final Style STYLE = Css.parse(Style.class, """
 			.container {
 				display: flex;
 				flex-direction: column;
@@ -37,7 +39,7 @@ public record Footer(Id id, Classes classes) implements CustomSingleElement, Css
 	}
 
 	@Override
-	public Element composeSingle() {
+	public Element compose() {
 		return div
 				.id(id)
 				.classes(classes.plus(STYLE.container))
@@ -50,11 +52,6 @@ public record Footer(Id id, Classes classes) implements CustomSingleElement, Css
 
 	public Footer classes(Classes classes) {
 		return new Footer(id, classes);
-	}
-
-	@Override
-	public Style style() {
-		return STYLE;
 	}
 
 }

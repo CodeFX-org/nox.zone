@@ -9,8 +9,8 @@
 	<version>0.1-SNAPSHOT</version>
 
 	<properties>
-		<maven.compiler.source>23</maven.compiler.source>
-		<maven.compiler.target>23</maven.compiler.target>
+		<maven.compiler.source>24</maven.compiler.source>
+		<maven.compiler.target>24</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>dev.nipafx.ginevra</groupId>
 			<artifactId>ginevra</artifactId>
-			<version>0.7.1</version>
+			<version>0.19</version>
 		</dependency>
 
 		<dependency>

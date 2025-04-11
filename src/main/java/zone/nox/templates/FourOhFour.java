@@ -1,26 +1,19 @@
 package zone.nox.templates;
 
-import dev.nipafx.ginevra.css.Css;
-import dev.nipafx.ginevra.css.CssStyle;
-import dev.nipafx.ginevra.html.Classes;
+import dev.nipafx.ginevra.outline.Compose;
 import dev.nipafx.ginevra.outline.HtmlPage;
-import dev.nipafx.ginevra.outline.HtmlPage.SlugStyle;
-import dev.nipafx.ginevra.outline.SingleTemplate;
-
-import java.nio.file.Path;
+import dev.nipafx.ginevra.outline.Slug;
+import dev.nipafx.ginevra.outline.Template;
 
 import static zone.nox.components.Components.layout;
 import static zone.nox.components.Components.pageHeader;
 
-public class FourOhFour implements SingleTemplate {
+public class FourOhFour implements Template {
 
-	public record Style(Classes red, Css css) implements CssStyle { }
-
-	@Override
-	public HtmlPage composeSingle() {
+	@Compose
+	public HtmlPage compose() {
 		return new HtmlPage(
-				Path.of("404"),
-				SlugStyle.FILE,
+				new Slug("404", Slug.SlugStyle.FILE),
 				layout
 						.title("404")
 						.description("Page not found")

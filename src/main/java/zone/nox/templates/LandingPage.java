@@ -2,27 +2,28 @@ package zone.nox.templates;
 
 import dev.nipafx.ginevra.css.Css;
 import dev.nipafx.ginevra.css.CssStyle;
-import dev.nipafx.ginevra.css.CssStyled;
+import dev.nipafx.ginevra.css.StyledWith;
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.outline.Compose;
+import dev.nipafx.ginevra.outline.ForAllIn;
 import dev.nipafx.ginevra.outline.HtmlPage;
-import dev.nipafx.ginevra.outline.Query;
-import dev.nipafx.ginevra.outline.Query.RootQuery;
-import dev.nipafx.ginevra.outline.QuerySingleTemplate;
+import dev.nipafx.ginevra.outline.Template;
 import zone.nox.data.Post;
-import zone.nox.data.Root;
 
-import java.nio.file.Path;
+import java.util.List;
 
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static java.util.Comparator.comparing;
 import static zone.nox.components.Components.layout;
 import static zone.nox.components.Components.postBlock;
 
-public class LandingTemplate implements QuerySingleTemplate<Root>, CssStyled<LandingTemplate.Style> {
+public class LandingPage implements Template {
 
 	public record Style(Classes posts, Classes post, Css css) implements CssStyle { }
-	private static final Style STYLE = Css.parse(Style.class, """
+
+	@StyledWith
+	public static final Style STYLE = Css.parse(Style.class, """
 			.posts {
 				display: flex;
 				flex-direction: column;
@@ -36,35 +37,24 @@ public class LandingTemplate implements QuerySingleTemplate<Root>, CssStyled<Lan
 			}
 			""");
 
-	@Override
-	public Query<Root> query() {
-		return new RootQuery<>(Root.class);
+	@Compose
+	public HtmlPage compose(@ForAllIn("posts") List<Post> posts) {
+		return new HtmlPage("/", composePage(posts));
 	}
 
-	@Override
-	public HtmlPage composeSingle(Root root) {
-		return new HtmlPage(Path.of(""), composePage(root));
-	}
-
-	private Element composePage(Root root) {
+	private Element composePage(List<Post> posts) {
 		return layout
 				.title("Radio Nox")
 				.description("News from the Shadows of Neotropolis.")
 				.content(div
 						.classes(STYLE.posts)
-						.children(root
-								.posts().stream()
+						.children(posts.stream()
 								.sorted(comparing(Post::index).reversed())
 								.map(post -> div
 										.classes(STYLE.post)
 										.children(postBlock(post)))
 								.toList())
 				);
-	}
-
-	@Override
-	public Style style() {
-		return STYLE;
 	}
 
 }

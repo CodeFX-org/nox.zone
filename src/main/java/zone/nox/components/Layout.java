@@ -2,9 +2,9 @@ package zone.nox.components;
 
 import dev.nipafx.ginevra.css.Css;
 import dev.nipafx.ginevra.css.CssStyle;
-import dev.nipafx.ginevra.css.CssStyled;
+import dev.nipafx.ginevra.css.StyledWith;
 import dev.nipafx.ginevra.html.Classes;
-import dev.nipafx.ginevra.html.CustomSingleElement;
+import dev.nipafx.ginevra.html.Component;
 import dev.nipafx.ginevra.html.Element;
 import dev.nipafx.ginevra.outline.Resources;
 
@@ -20,10 +20,12 @@ import static dev.nipafx.ginevra.html.HtmlElement.meta;
 import static zone.nox.components.Components.footer;
 import static zone.nox.components.Components.header;
 
-public record Layout(String title, String description, List<? extends Element> content) implements CustomSingleElement, CssStyled<Layout.Style> {
+public record Layout(String title, String description, List<? extends Element> content) implements Component {
 
 	public record Style(Classes layout, Classes page, Classes header, Classes content, Classes footer, Css css) implements CssStyle { }
-	private static final Style STYLE = Css.parse(Style.class, """
+
+	@StyledWith
+	public static final Style STYLE = Css.parse(Style.class, """
 			body {
 				margin: 0;
 				min-width: 320px;
@@ -129,7 +131,7 @@ public record Layout(String title, String description, List<? extends Element> c
 			""");
 
 	@Override
-	public Element composeSingle() {
+	public Element compose() {
 		return document
 				.language(Locale.US)
 				.head(head
@@ -162,11 +164,6 @@ public record Layout(String title, String description, List<? extends Element> c
 
 	public Layout content(Element... children) {
 		return new Layout(this.title, this.description, List.of(children));
-	}
-
-	@Override
-	public Style style() {
-		return STYLE;
 	}
 
 }

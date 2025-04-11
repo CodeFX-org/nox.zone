@@ -2,13 +2,13 @@ package zone.nox.templates;
 
 import dev.nipafx.ginevra.css.Css;
 import dev.nipafx.ginevra.css.CssStyle;
-import dev.nipafx.ginevra.css.CssStyled;
+import dev.nipafx.ginevra.css.StyledWith;
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.outline.Compose;
+import dev.nipafx.ginevra.outline.ForEachIn;
 import dev.nipafx.ginevra.outline.HtmlPage;
-import dev.nipafx.ginevra.outline.Query;
-import dev.nipafx.ginevra.outline.Query.CollectionQuery;
-import dev.nipafx.ginevra.outline.QuerySingleTemplate;
+import dev.nipafx.ginevra.outline.Template;
 import zone.nox.Target;
 import zone.nox.data.Post;
 
@@ -16,11 +16,12 @@ import static dev.nipafx.ginevra.html.HtmlElement.a;
 import static zone.nox.components.Components.layout;
 import static zone.nox.components.Components.postContent;
 
-public record PostTemplate(Target target) implements QuerySingleTemplate<Post>, CssStyled<PostTemplate.Style> {
+public record PostPage(Target target) implements Template {
 
 	public record Style(Classes back, Css css) implements CssStyle { }
 
-	private static final Style STYLE = Css.parse(Style.class, """
+	@StyledWith
+	public static final Style STYLE = Css.parse(Style.class, """
 			.back {
 				margin-top: var(--gap);
 				font-family: var(--alt-font), "sans-serif";
@@ -31,13 +32,8 @@ public record PostTemplate(Target target) implements QuerySingleTemplate<Post>, 
 			}
 			""");
 
-	@Override
-	public Query<Post> query() {
-		return new CollectionQuery<>("posts", Post.class);
-	}
-
-	@Override
-	public HtmlPage composeSingle(Post post) {
+	@Compose
+	public HtmlPage compose(@ForEachIn("posts") Post post) {
 		return new HtmlPage(post.slug(), composePage(post));
 	}
 
@@ -50,11 +46,6 @@ public record PostTemplate(Target target) implements QuerySingleTemplate<Post>, 
 								.embedLocalVideo(target.embedLocalVideo())
 								.embedYouTubeVideo(target.embedYouTubeVideo()),
 						a.classes(STYLE.back).href("/").text("<< Back"));
-	}
-
-	@Override
-	public Style style() {
-		return STYLE;
 	}
 
 }

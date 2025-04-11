@@ -2,11 +2,12 @@ package zone.nox.components;
 
 import dev.nipafx.ginevra.css.Css;
 import dev.nipafx.ginevra.css.CssStyle;
-import dev.nipafx.ginevra.css.CssStyled;
+import dev.nipafx.ginevra.css.StyledWith;
 import dev.nipafx.ginevra.html.Classes;
-import dev.nipafx.ginevra.html.CustomElement;
+import dev.nipafx.ginevra.html.Component;
 import dev.nipafx.ginevra.html.Element;
 import dev.nipafx.ginevra.html.Video.Preload;
+import dev.nipafx.ginevra.outline.Compose;
 import dev.nipafx.ginevra.outline.Resources;
 import zone.nox.data.Post;
 
@@ -18,12 +19,14 @@ import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.video;
 import static zone.nox.components.Components.pageHeader;
 
-public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTubeVideo) implements CustomElement, CssStyled<PostContent.Style> {
+public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTubeVideo) implements Component {
 
 	public record Style(
 			Classes header, Classes content,
 			Classes localVideo, Classes youTubeVideoContainer, Classes youTubeVideo, Css css) implements CssStyle { }
-	private static final Style STYLE = Css.parse(Style.class, """
+
+	@StyledWith
+	public static final Style STYLE = Css.parse(Style.class, """
 			.header {
 				margin-bottom: 1em;
 			}
@@ -76,8 +79,8 @@ public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTu
 		this(post, false, false);
 	}
 
-	@Override
-	public List<Element> compose() {
+	@Compose
+	public List<Element> composeContent() {
 		return List.of(
 				div.classes(STYLE.header).children(pageHeader.post(post)),
 				embeddedLocalVideo(),
@@ -126,11 +129,6 @@ public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTu
 
 	public PostContent embedYouTubeVideo(boolean embedYouTubeVideo) {
 		return new PostContent(post, embedLocalVideo, embedYouTubeVideo);
-	}
-
-	@Override
-	public Style style() {
-		return STYLE;
 	}
 
 }

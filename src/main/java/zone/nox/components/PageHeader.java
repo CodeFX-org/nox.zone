@@ -2,9 +2,9 @@ package zone.nox.components;
 
 import dev.nipafx.ginevra.css.Css;
 import dev.nipafx.ginevra.css.CssStyle;
-import dev.nipafx.ginevra.css.CssStyled;
+import dev.nipafx.ginevra.css.StyledWith;
 import dev.nipafx.ginevra.html.Classes;
-import dev.nipafx.ginevra.html.CustomSingleElement;
+import dev.nipafx.ginevra.html.Component;
 import dev.nipafx.ginevra.html.Element;
 import zone.nox.data.Post;
 
@@ -16,10 +16,12 @@ import static dev.nipafx.ginevra.html.HtmlElement.h1;
 import static dev.nipafx.ginevra.html.HtmlElement.p;
 import static zone.nox.components.Components.format;
 
-public record PageHeader(String title, String summary, Optional<String> dateLine) implements CustomSingleElement, CssStyled<PageHeader.Style> {
+public record PageHeader(String title, String summary, Optional<String> dateLine) implements Component {
 
 	public record Style(Classes container, Classes title, Classes date, Classes summary, Css css) implements CssStyle { }
-	private static final Style STYLE = Css.parse(Style.class, """
+
+	@StyledWith
+	public static final Style STYLE = Css.parse(Style.class, """
 			.container {
 				display: flex;
 				flex-direction: column;
@@ -49,7 +51,7 @@ public record PageHeader(String title, String summary, Optional<String> dateLine
 			""");
 
 	@Override
-	public Element composeSingle() {
+	public Element compose() {
 		return div
 				.classes(STYLE.container)
 				.children(
@@ -81,11 +83,6 @@ public record PageHeader(String title, String summary, Optional<String> dateLine
 	public PageHeader post(Post post) {
 		var dateLine = "#%03d / %s".formatted(post.index(), format(post.date()));
 		return new PageHeader(post.title(), post.summary(), Optional.of(dateLine));
-	}
-
-	@Override
-	public Style style() {
-		return STYLE;
 	}
 
 }
