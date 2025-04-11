@@ -11,7 +11,7 @@ import zone.nox.data.Post;
 import static dev.nipafx.ginevra.html.HtmlElement.a;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.span;
-import static zone.nox.components.Components.format;
+import static zone.nox.data.Neotropolis.format;
 
 public record PostBlock(Post post) implements Component {
 

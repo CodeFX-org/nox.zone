@@ -26,14 +26,4 @@ public class Components {
 		return new PostContent(post);
 	}
 
-	private static final LocalDateTime FIRST_DAY_2024 = LocalDate.of(2024, 4, 24).atTime(0, 0);
-	private static final DateTimeFormatter ABSOLUTE_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd / HH:mm 'NTZ'");
-	private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm 'NTZ'");
-
-	public static String format(LocalDateTime dateTime) {
-		return dateTime.isBefore(FIRST_DAY_2024)
-				? ABSOLUTE_DATE.format(dateTime)
-				: "Day " + (dateTime.getDayOfMonth() - FIRST_DAY_2024.getDayOfMonth() + 1) + " / " + TIME.format(dateTime);
-	}
-
 }

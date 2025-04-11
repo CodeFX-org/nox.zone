@@ -14,7 +14,7 @@ import static dev.nipafx.ginevra.html.GmlElement.nothing;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.h1;
 import static dev.nipafx.ginevra.html.HtmlElement.p;
-import static zone.nox.components.Components.format;
+import static zone.nox.data.Neotropolis.format;
 
 public record PageHeader(String title, String summary, Optional<String> dateLine) implements Component {
 
