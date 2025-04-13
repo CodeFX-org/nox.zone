@@ -18,6 +18,7 @@ public class Site implements SiteConfiguration {
 	private static final Path RESOURCES = Path.of("src/main/resources/resources").toAbsolutePath();
 	private static final Path SOCIAL_LINKS = RESOURCES.resolve("social-icons");
 	private static final Path VIDEOS = Path.of("src/main/resources/videos").toAbsolutePath();
+	private static final Path IMAGES = Path.of("src/main/resources/images").toAbsolutePath();
 
 	private final Config config;
 
@@ -45,6 +46,9 @@ public class Site implements SiteConfiguration {
 		outliner
 				.sourceBinaryFiles("videos", VIDEOS)
 				.storeResource(res -> res.file().getFileName().toString());
+		outliner
+				.sourceBinaryFiles("images", IMAGES)
+				.storeResource(res -> "/" + IMAGES.getParent().relativize(res.file()));
 
 		outliner
 				.sourceTextFiles("posts", POSTS)

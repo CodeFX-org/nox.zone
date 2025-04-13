@@ -6,6 +6,7 @@ import dev.nipafx.ginevra.css.StyledWith;
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Component;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.html.Image;
 import dev.nipafx.ginevra.html.Video.Preload;
 import dev.nipafx.ginevra.outline.Compose;
 import dev.nipafx.ginevra.outline.Resources;
@@ -15,9 +16,12 @@ import java.util.List;
 
 import static dev.nipafx.ginevra.html.GmlElement.html;
 import static dev.nipafx.ginevra.html.GmlElement.nothing;
+import static dev.nipafx.ginevra.html.GmlElement.transform;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
+import static dev.nipafx.ginevra.html.HtmlElement.p;
 import static dev.nipafx.ginevra.html.HtmlElement.video;
 import static zone.nox.components.Components.pageHeader;
+import static zone.nox.components.Components.postImage;
 
 public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTubeVideo) implements Component {
 
@@ -85,7 +89,14 @@ public record PostContent(Post post, boolean embedLocalVideo, boolean embedYouTu
 				div.classes(STYLE.header).children(pageHeader.post(post)),
 				embeddedLocalVideo(),
 				embeddedYouTubeVideo(),
-				div.classes(STYLE.content).children(post.content().elements()));
+				div.classes(STYLE.content).children(
+						transform
+								.elements(post.content().elements())
+								.with(p.getClass(), p ->
+										p.children().size() == 1 && p.children().getFirst() instanceof Image img
+												? postImage(img)
+												: p)
+				));
 	}
 
 	private Element embeddedLocalVideo() {

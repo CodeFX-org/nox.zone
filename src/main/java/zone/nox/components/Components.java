@@ -1,10 +1,8 @@
 package zone.nox.components;
 
+import dev.nipafx.ginevra.html.Image;
 import zone.nox.data.Post;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +22,10 @@ public class Components {
 
 	public static PostContent postContent(Post post) {
 		return new PostContent(post);
+	}
+
+	public static PostImage postImage(Image image) {
+		return new PostImage(image);
 	}
 
 }
