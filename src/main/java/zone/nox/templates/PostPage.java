@@ -39,6 +39,7 @@ public record PostPage(Target target) implements Template {
 
 	private Element composePage(Post post) {
 		return layout
+				.slug(post.slug())
 				.title(post.title())
 				.description(post.summary())
 				.thumbnail(post.thumbnail())

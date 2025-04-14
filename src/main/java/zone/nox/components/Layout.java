@@ -22,7 +22,7 @@ import static dev.nipafx.ginevra.util.CollectionUtils.plus;
 import static zone.nox.components.Components.footer;
 import static zone.nox.components.Components.header;
 
-public record Layout(String title, String description, Optional<String> thumbnail, List<? extends Element> content) implements Component {
+public record Layout(String slug, String title, String description, Optional<String> thumbnail, List<? extends Element> content) implements Component {
 
 	public record Style(Classes layout, Classes page, Classes header, Classes content, Classes footer, Css css) implements CssStyle { }
 
@@ -137,11 +137,18 @@ public record Layout(String title, String description, Optional<String> thumbnai
 		var metaElements = List.of(
 				meta.name("viewport").content("width=device-width, initial-scale=1"),
 				meta.name("description").content(description),
+				meta.name("og:type").content("website"),
+				// TODO: the root URL shouldn't be hard-coded
+				meta.name("og:url").content("https://nox.zone/" + slug),
+				meta.name("og:logo").content("https://nox.zone/favicon.ico"),
+				meta.name("og:title").content(title),
 				meta.name("twitter:title").content(title),
+				meta.name("og:description").content(description),
 				meta.name("twitter:description").content(description)
 		);
 		var card = thumbnail.map(thumb -> List.of(
 						// TODO: the root URL shouldn't be hard-coded
+						meta.name("og:image").content("https://nox.zone/thumbnails/" + thumb),
 						meta.name("twitter:image").content("https://nox.zone/thumbnails/" + thumb),
 						meta.name("twitter:card").content("summary_large_image")))
 				.orElse(List.of(meta.name("twitter:card").content("summary")));
@@ -163,24 +170,28 @@ public record Layout(String title, String description, Optional<String> thumbnai
 										footer.classes(STYLE.footer))));
 	}
 
+	public Layout slug(String slug) {
+		return new Layout(slug, this.title, this.description, this.thumbnail, this.content);
+	}
+
 	public Layout title(String title) {
-		return new Layout(title, this.description, this.thumbnail, this.content);
+		return new Layout(this.slug, title, this.description, this.thumbnail, this.content);
 	}
 
 	public Layout description(String description) {
-		return new Layout(this.title, description, this.thumbnail, this.content);
+		return new Layout(this.slug, this.title, description, this.thumbnail, this.content);
 	}
 
 	public Layout thumbnail(Optional<String> thumbnail) {
-		return new Layout(this.title, this.description, thumbnail, this.content);
+		return new Layout(this.slug, this.title, this.description, thumbnail, this.content);
 	}
 
 	public Layout content(List<? extends Element> children) {
-		return new Layout(this.title, this.description, this.thumbnail, children);
+		return new Layout(this.slug, this.title, this.description, this.thumbnail, children);
 	}
 
 	public Layout content(Element... children) {
-		return new Layout(this.title, this.description, this.thumbnail, List.of(children));
+		return new Layout(this.slug, this.title, this.description, this.thumbnail, List.of(children));
 	}
 
 }

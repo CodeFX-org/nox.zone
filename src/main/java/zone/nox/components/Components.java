@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class Components {
 
-	public static Layout layout = new Layout(null, null, Optional.empty(), List.of());
+	public static Layout layout = new Layout(null, null, null, Optional.empty(), List.of());
 
 	public static Header header = new Header();
 

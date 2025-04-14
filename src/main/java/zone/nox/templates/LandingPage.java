@@ -13,6 +13,7 @@ import zone.nox.data.Post;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,8 +57,10 @@ public class LandingPage implements Template {
 	private Element composePage(List<Post> posts) {
 		var postsByYear = posts.stream().collect(Collectors.groupingBy(post -> post.date().getYear()));
 		return layout
+				.slug("")
 				.title("Radio Nox")
 				.description("News from the Shadows of Neotropolis.")
+				.thumbnail(Optional.of("landing.jpg"))
 				.content(div
 						.classes(STYLE.posts)
 						.children(postsByYear

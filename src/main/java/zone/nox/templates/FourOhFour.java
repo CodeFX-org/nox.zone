@@ -15,6 +15,7 @@ public class FourOhFour implements Template {
 		return new HtmlPage(
 				new Slug("404", Slug.SlugStyle.FILE),
 				layout
+						.slug("404.html")
 						.title("404")
 						.description("Page not found")
 						.content(
