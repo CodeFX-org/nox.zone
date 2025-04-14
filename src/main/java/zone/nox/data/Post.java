@@ -11,7 +11,7 @@ import java.util.Optional;
 import static java.util.function.Predicate.not;
 
 public record Post(
-		String title, String summary, String slug, Integer index, String name, LocalDateTime date,
+		String title, String summary, String slug, Integer index, String name, LocalDateTime date, Optional<String> thumbnail,
 		Optional<String> localFile, Optional<String> youTubeId, HtmlContent content)
 		implements Document {
 
@@ -31,7 +31,7 @@ public record Post(
 				// setting it to the empty string
 				.filter(not(String::isBlank));
 		var content = post.contentParsedAsMarkdown();
-		return new Post(post.title(), post.summary(), slug, index, name, date, localFile, post.youTubeId(), content);
+		return new Post(post.title(), post.summary(), slug, index, name, date, post.thumbnail(), localFile, post.youTubeId(), content);
 	}
 
 	private static String[] getFileNameParts(Md post) {
@@ -45,7 +45,7 @@ public record Post(
 	}
 
 	public record Md(
-			String title, String summary, Optional<String> localFile, Optional<String> youTubeId,
+			String title, String summary, Optional<String> thumbnail, Optional<String> localFile, Optional<String> youTubeId,
 			Path file, HtmlContent contentParsedAsMarkdown)
 			implements Document { }
 

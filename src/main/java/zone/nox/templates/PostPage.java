@@ -41,6 +41,7 @@ public record PostPage(Target target) implements Template {
 		return layout
 				.title(post.title())
 				.description(post.summary())
+				.thumbnail(post.thumbnail())
 				.content(
 						postContent(post)
 								.embedLocalVideo(target.embedLocalVideo())

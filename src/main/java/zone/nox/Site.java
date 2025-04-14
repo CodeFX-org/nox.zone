@@ -19,6 +19,7 @@ public class Site implements SiteConfiguration {
 	private static final Path SOCIAL_LINKS = RESOURCES.resolve("social-icons");
 	private static final Path VIDEOS = Path.of("src/main/resources/videos").toAbsolutePath();
 	private static final Path IMAGES = Path.of("src/main/resources/images").toAbsolutePath();
+	private static final Path THUMBNAILS = Path.of("src/main/resources/thumbnails").toAbsolutePath();
 
 	private final Config config;
 
@@ -49,6 +50,9 @@ public class Site implements SiteConfiguration {
 		outliner
 				.sourceBinaryFiles("images", IMAGES)
 				.storeResource(res -> "/" + IMAGES.getParent().relativize(res.file()));
+		outliner
+				.sourceBinaryFiles("thumbnails", THUMBNAILS)
+				.storeResource(res -> "/" + THUMBNAILS.getParent().relativize(res.file()));
 
 		outliner
 				.sourceTextFiles("posts", POSTS)
@@ -60,6 +64,12 @@ public class Site implements SiteConfiguration {
 		outliner.generate(new PostPage(Target.from(config)));
 		outliner.generate(new FourOhFour());
 		outliner.generateStaticResources(Path.of(""), "favicon.ico");
+		// TODO: this should be easier
+		outliner.generateStaticResources(
+				Path.of("thumbnails"),
+				"/thumbnails/12-last-year.jpg",
+				"/thumbnails/13-mexico.jpg"
+		);
 
 		return outliner.build();
 	}

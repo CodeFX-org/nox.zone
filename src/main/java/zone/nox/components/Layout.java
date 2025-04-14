@@ -11,16 +11,18 @@ import dev.nipafx.ginevra.outline.Resources;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import static dev.nipafx.ginevra.html.HtmlElement.body;
 import static dev.nipafx.ginevra.html.HtmlElement.div;
 import static dev.nipafx.ginevra.html.HtmlElement.document;
 import static dev.nipafx.ginevra.html.HtmlElement.head;
 import static dev.nipafx.ginevra.html.HtmlElement.meta;
+import static dev.nipafx.ginevra.util.CollectionUtils.plus;
 import static zone.nox.components.Components.footer;
 import static zone.nox.components.Components.header;
 
-public record Layout(String title, String description, List<? extends Element> content) implements Component {
+public record Layout(String title, String description, Optional<String> thumbnail, List<? extends Element> content) implements Component {
 
 	public record Style(Classes layout, Classes page, Classes header, Classes content, Classes footer, Css css) implements CssStyle { }
 
@@ -132,14 +134,25 @@ public record Layout(String title, String description, List<? extends Element> c
 
 	@Override
 	public Element compose() {
+		var metaElements = List.of(
+				meta.name("viewport").content("width=device-width, initial-scale=1"),
+				meta.name("description").content(description),
+				meta.name("twitter:title").content(title),
+				meta.name("twitter:description").content(description)
+		);
+		var card = thumbnail.map(thumb -> List.of(
+						// TODO: the root URL shouldn't be hard-coded
+						meta.name("twitter:image").content("https://nox.zone/thumbnails/" + thumb),
+						meta.name("twitter:card").content("summary_large_image")))
+				.orElse(List.of(meta.name("twitter:card").content("summary")));
+		metaElements = plus(metaElements, card);
+
 		return document
 				.language(Locale.US)
 				.head(head
 						.charset(StandardCharsets.UTF_8)
 						.title(title)
-						.children(
-								meta.name("viewport").content("width=device-width, initial-scale=1"),
-								meta.name("description").content(description)))
+						.children(metaElements))
 				.body(body
 						.classes(STYLE.layout)
 						.children(div
@@ -151,19 +164,23 @@ public record Layout(String title, String description, List<? extends Element> c
 	}
 
 	public Layout title(String title) {
-		return new Layout(title, this.description, this.content);
+		return new Layout(title, this.description, this.thumbnail, this.content);
 	}
 
 	public Layout description(String description) {
-		return new Layout(this.title, description, this.content);
+		return new Layout(this.title, description, this.thumbnail, this.content);
+	}
+
+	public Layout thumbnail(Optional<String> thumbnail) {
+		return new Layout(this.title, this.description, thumbnail, this.content);
 	}
 
 	public Layout content(List<? extends Element> children) {
-		return new Layout(this.title, this.description, children);
+		return new Layout(this.title, this.description, this.thumbnail, children);
 	}
 
 	public Layout content(Element... children) {
-		return new Layout(this.title, this.description, List.of(children));
+		return new Layout(this.title, this.description, this.thumbnail, List.of(children));
 	}
 
 }
