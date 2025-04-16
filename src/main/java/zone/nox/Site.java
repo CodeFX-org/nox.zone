@@ -68,7 +68,8 @@ public class Site implements SiteConfiguration {
 		outliner.generateStaticResources(
 				Path.of("thumbnails"),
 				"/thumbnails/12-last-year.jpg",
-				"/thumbnails/13-mexico.jpg"
+				"/thumbnails/13-mexico.jpg",
+				"/thumbnails/14-scaff.jpg"
 		);
 
 		return outliner.build();
