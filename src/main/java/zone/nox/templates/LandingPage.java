@@ -60,7 +60,7 @@ public class LandingPage implements Template {
 				.slug("")
 				.title("Radio Nox")
 				.description("News from the Shadows of Neotropolis.")
-				.thumbnail(Optional.of("landing.jpg"))
+				.thumbnail(Optional.of("/thumbnails/landing.jpg"))
 				.content(div
 						.classes(STYLE.posts)
 						.children(postsByYear

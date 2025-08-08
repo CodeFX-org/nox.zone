@@ -6,6 +6,7 @@ import dev.nipafx.ginevra.css.StyledWith;
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Component;
 import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.html.Src;
 import dev.nipafx.ginevra.outline.Resources;
 
 import java.nio.charset.StandardCharsets;
@@ -147,9 +148,8 @@ public record Layout(String slug, String title, String description, Optional<Str
 				meta.name("twitter:description").content(description)
 		);
 		var card = thumbnail.map(thumb -> List.of(
-						// TODO: the root URL shouldn't be hard-coded
-						meta.name("og:image").content("https://nox.zone/thumbnails/" + thumb),
-						meta.name("twitter:image").content("https://nox.zone/thumbnails/" + thumb),
+						meta.name("og:image").contentSrc(Resources.include(thumb)),
+						meta.name("twitter:image").contentSrc(Resources.include(thumb)),
 						meta.name("twitter:card").content("summary_large_image")))
 				.orElse(List.of(meta.name("twitter:card").content("summary")));
 		metaElements = plus(metaElements, card);

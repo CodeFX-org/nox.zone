@@ -64,13 +64,6 @@ public class Site implements SiteConfiguration {
 		outliner.generate(new PostPage(Target.from(config)));
 		outliner.generate(new FourOhFour());
 		outliner.generateStaticResources(Path.of(""), "favicon.ico");
-		// TODO: this should be easier
-		outliner.generateStaticResources(
-				Path.of("thumbnails"),
-				"/thumbnails/12-last-year.jpg",
-				"/thumbnails/13-mexico.jpg",
-				"/thumbnails/14-scaff.jpg"
-		);
 
 		return outliner.build();
 	}
