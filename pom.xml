@@ -9,8 +9,7 @@
 	<version>0.1-SNAPSHOT</version>
 
 	<properties>
-		<maven.compiler.source>24</maven.compiler.source>
-		<maven.compiler.target>24</maven.compiler.target>
+		<maven.compiler.release>25</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -18,18 +17,18 @@
 		<dependency>
 			<groupId>dev.nipafx.ginevra</groupId>
 			<artifactId>ginevra</artifactId>
-			<version>0.19</version>
+			<version>0.20.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.commonmark</groupId>
 			<artifactId>commonmark</artifactId>
-			<version>0.22.0</version>
+			<version>0.25.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.commonmark</groupId>
 			<artifactId>commonmark-ext-yaml-front-matter</artifactId>
-			<version>0.22.0</version>
+			<version>0.25.1</version>
 		</dependency>
 	</dependencies>
 
