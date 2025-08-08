@@ -29,6 +29,10 @@ public record Layout(String slug, String title, String description, Optional<Str
 
 	@StyledWith
 	public static final Style STYLE = Css.parse(Style.class, """
+			html {
+				background-color: #111;
+			}
+
 			body {
 				margin: 0;
 				min-width: 320px;
