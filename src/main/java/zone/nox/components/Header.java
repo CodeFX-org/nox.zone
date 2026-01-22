@@ -92,7 +92,7 @@ public record Header(Id id, Classes classes) implements Component {
 								a.href("https://www.neotropolis.com").text("Neotropolis")),
 						div.classes(STYLE.social).children(
 								a.href("https://www.tiktok.com/@radionox").children(img.src(Resources.include("tiktok.png"))),
-								a.href("https://www.youtube.com/@radiorox").children(img.src(Resources.include("youtube.png"))),
+								a.href("https://www.youtube.com/@radionox").children(img.src(Resources.include("youtube.png"))),
 								a.href("https://www.facebook.com/profile.php?id=61556212299318").children(img.src(Resources.include("facebook.png"))),
 								a.href("https://twitter.com/RadioNoxx").children(img.src(Resources.include("twitter.png"))),
 								a.href("https://mastodon.art/@radionox").children(img.src(Resources.include("mastodon.png"))),

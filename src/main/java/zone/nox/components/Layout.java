@@ -6,7 +6,6 @@ import dev.nipafx.ginevra.css.StyledWith;
 import dev.nipafx.ginevra.html.Classes;
 import dev.nipafx.ginevra.html.Component;
 import dev.nipafx.ginevra.html.Element;
-import dev.nipafx.ginevra.html.Src;
 import dev.nipafx.ginevra.outline.Resources;
 
 import java.nio.charset.StandardCharsets;

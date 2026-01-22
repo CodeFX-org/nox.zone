@@ -3,7 +3,10 @@ package zone.nox.components;
 import dev.nipafx.ginevra.css.Css;
 import dev.nipafx.ginevra.css.CssStyle;
 import dev.nipafx.ginevra.css.StyledWith;
-import dev.nipafx.ginevra.html.*;
+import dev.nipafx.ginevra.html.Classes;
+import dev.nipafx.ginevra.html.Component;
+import dev.nipafx.ginevra.html.Element;
+import dev.nipafx.ginevra.html.Image;
 import dev.nipafx.ginevra.outline.Resources;
 
 import static dev.nipafx.ginevra.html.HtmlElement.div;
